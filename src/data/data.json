@@ -1,0 +1,1367 @@
+{
+  "meta": {
+    "appName": "Viden Engine",
+    "version": "1.0.0"
+  },
+  "campaign": {
+    "id": "CAMP-VY-2026-Q3",
+    "name": "Vyepti Q3 2026 HCP Launch",
+    "subtitle": "Reframing IV Preventive Therapy",
+    "brand": "Vyepti (eptinezumab-jjmr)",
+    "therapeuticArea": "Migraine \u2014 Prevention",
+    "geography": "United States \u2014 National",
+    "launchWindow": "Q3 2026 (Sept \u2013 Nov)",
+    "goLive": "14 Sep 2026",
+    "targetHCPs": 18400,
+    "status": "active"
+  },
+  "navigation": [
+    {
+      "id": "discover",
+      "label": "Discover",
+      "icon": "Search",
+      "screens": [
+        {
+          "id": "start-campaign",
+          "label": "Start Campaign",
+          "actor": "user",
+          "step": 1
+        },
+        {
+          "id": "prior-intelligence",
+          "label": "Prior Intelligence",
+          "actor": "ke",
+          "step": 2
+        },
+        {
+          "id": "primary-research",
+          "label": "Primary Research",
+          "actor": "ke",
+          "step": 3
+        },
+        {
+          "id": "align-audience",
+          "label": "Align Audience",
+          "actor": "user",
+          "step": 4
+        }
+      ]
+    },
+    {
+      "id": "plan",
+      "label": "Plan",
+      "icon": "FileText",
+      "screens": [
+        {
+          "id": "campaign-brief",
+          "label": "Campaign Brief",
+          "actor": "user",
+          "step": 5
+        },
+        {
+          "id": "content-strategy",
+          "label": "Content Strategy",
+          "actor": "user",
+          "step": 6
+        }
+      ]
+    },
+    {
+      "id": "create",
+      "label": "Create",
+      "icon": "Layers",
+      "screens": [
+        {
+          "id": "generate-variants",
+          "label": "Generate Variants",
+          "actor": "gs",
+          "step": 7
+        },
+        {
+          "id": "mlr-compliance",
+          "label": "MLR Compliance",
+          "actor": "user",
+          "step": 8
+        }
+      ]
+    },
+    {
+      "id": "activate",
+      "label": "Activate",
+      "icon": "PlayCircle",
+      "screens": [
+        {
+          "id": "launch-campaign",
+          "label": "Launch Campaign",
+          "actor": "user",
+          "step": 9
+        },
+        {
+          "id": "analytics",
+          "label": "Analytics",
+          "actor": "ke",
+          "step": 10
+        },
+        {
+          "id": "refresh-content",
+          "label": "Refresh Content",
+          "actor": "gs",
+          "step": 11
+        },
+        {
+          "id": "store-learnings",
+          "label": "Store Learnings",
+          "actor": "ke",
+          "step": 12
+        }
+      ]
+    }
+  ],
+  "filters": {
+    "channels": [
+      "All Channels",
+      "Veeva CLM",
+      "HCP Portal",
+      "Email",
+      "Congress",
+      "Display",
+      "P2P"
+    ],
+    "segments": [
+      "All Segments",
+      "T1 KOL",
+      "T2 Neuro",
+      "Gen. Neuro",
+      "High-Rx PCPs"
+    ],
+    "waves": [
+      "All Waves",
+      "W1 - Launch",
+      "W2 - AHS Peak",
+      "W3 - Sustain"
+    ],
+    "researchTypes": [
+      "All",
+      "KOL Interviews",
+      "HCP Survey",
+      "Social Signal",
+      "Competitive"
+    ]
+  },
+  "screens": {
+    "startCampaign": {
+      "formDefaults": {
+        "campaignName": "Vyepti Q3 2026 HCP Launch - Reframing IV Preventive Therapy",
+        "brand": "Vyepti (eptinezumab-jjmr)",
+        "therapeuticArea": "Migraine - Prevention",
+        "geography": "United States - National",
+        "launchWindow": "Q3 2026 (Sept - Nov)"
+      },
+      "objectives": [
+        {
+          "id": "edu",
+          "label": "HCP education and awareness",
+          "selected": true
+        },
+        {
+          "id": "sov",
+          "label": "Share-of-voice growth",
+          "selected": false
+        },
+        {
+          "id": "referral",
+          "label": "Referral pathway activation",
+          "selected": false
+        },
+        {
+          "id": "disease",
+          "label": "Disease state education",
+          "selected": false
+        },
+        {
+          "id": "switch",
+          "label": "Treatment switch",
+          "selected": false
+        }
+      ],
+      "audiences": [
+        {
+          "id": "neuro",
+          "label": "Neurologists (US, ~16,200)",
+          "selected": true
+        },
+        {
+          "id": "headache",
+          "label": "Headache specialists (UCNS-certified, ~720)",
+          "selected": true
+        },
+        {
+          "id": "pcp",
+          "label": "High-prescribing PCPs (preventive Rx Q3 2025)",
+          "selected": true
+        },
+        {
+          "id": "infusion",
+          "label": "Infusion suite directors",
+          "selected": false
+        },
+        {
+          "id": "pain",
+          "label": "Pain medicine",
+          "selected": false
+        }
+      ],
+      "kpis": [
+        {
+          "label": "Lift in Rx share vs CGRP class",
+          "value": "+2.4 pts"
+        },
+        {
+          "label": "HCPs reached (Tier 1+2)",
+          "value": "9,500"
+        },
+        {
+          "label": "Infusion referrals",
+          "value": "+18%"
+        }
+      ],
+      "aiSidekick": {
+        "priorCampaigns": 14,
+        "evidenceBases": [
+          "PROMISE-1/2",
+          "DELIVER"
+        ],
+        "bestMatch": {
+          "name": "Vyepti DELIVER Sub-population Push Q1 2025",
+          "matchScore": 87,
+          "lift": "+3.1 pts SoV",
+          "infusionReferrals": "+22%"
+        },
+        "suggestedSegments": [
+          {
+            "label": "Migraine NPs / PAs",
+            "addCount": 4100
+          },
+          {
+            "label": "Concierge neurology",
+            "addCount": 340
+          }
+        ],
+        "headsUp": "AHS Annual Scientific Meeting falls inside your launch window (June 11-14). Consider sequencing congress presence into the brief."
+      }
+    },
+    "priorIntelligence": {
+      "kpis": [
+        {
+          "label": "Prior Campaigns",
+          "value": "14",
+          "delta": "8 with measurable lift"
+        },
+        {
+          "label": "Approved Claims",
+          "value": "47",
+          "delta": "3 expired Q2 2026"
+        },
+        {
+          "label": "Audience Insights",
+          "value": "38",
+          "delta": "From CRM and Veeva CLM"
+        },
+        {
+          "label": "Avg HCP Engagement",
+          "value": "3.4x",
+          "delta": "vs class baseline 1.9x"
+        }
+      ],
+      "campaigns": [
+        {
+          "id": "CAMP-VY-2025-Q1",
+          "name": "Vyepti DELIVER Sub-population Push",
+          "matchScore": 87,
+          "tag": "Quarterly cycle",
+          "tagType": "teal",
+          "channels": "Veeva CLM - HCP portal - field rep",
+          "lift": "+3.1 pts SoV - +22% infusion referrals",
+          "liftType": "ok",
+          "whatWorked": "PROMISE-2 50% responder framing"
+        },
+        {
+          "id": "CAMP-VY-2024-AHS",
+          "name": "AHS 2024 - Onset of Action Story",
+          "matchScore": 74,
+          "tag": "Congress",
+          "tagType": "info",
+          "channels": "Congress booth - symposium - peer-to-peer",
+          "lift": "+1.8 pts SoV",
+          "liftType": "ok",
+          "whatWorked": "KOL-led case discussions"
+        },
+        {
+          "id": "CAMP-VY-2024-Q3",
+          "name": "PCP Awareness - IV Modality Education",
+          "matchScore": 61,
+          "tag": "Mixed result",
+          "tagType": "warn",
+          "channels": "Email - programmatic display - webinar",
+          "lift": "Flat - no significant Rx lift",
+          "liftType": "warn",
+          "whatWorked": "Pair PCP edu with infusion-site mapping"
+        }
+      ],
+      "claims": [
+        {
+          "text": "~50% reduction in monthly migraine days vs placebo at Week 1-4",
+          "citation": "PROMISE-2 S3.1",
+          "status": "approved",
+          "expires": "31 Mar 2027"
+        },
+        {
+          "text": "Onset of preventive effect as early as Day 1 post-infusion",
+          "citation": "PROMISE-1",
+          "status": "approved",
+          "expires": null
+        },
+        {
+          "text": "Efficacy in patients with 2-4 prior preventive failures",
+          "citation": "DELIVER 2023",
+          "status": "approved",
+          "expires": null
+        },
+        {
+          "text": "Quarterly IV dosing - 4 infusions per year",
+          "citation": "Prescribing Info S2",
+          "status": "warn",
+          "expires": null
+        }
+      ],
+      "audienceInsights": [
+        {
+          "stat": "68%",
+          "text": "of T1/T2 neurologists report onset-of-effect as #1 unmet need when switching preventive therapies",
+          "cite": "CRM 2025"
+        },
+        {
+          "stat": "42%",
+          "text": "of PCPs are unaware of in-office infusion options for migraine prevention",
+          "cite": "Survey Q4 2025"
+        },
+        {
+          "stat": "3.2x",
+          "text": "higher engagement with peer-to-peer formats vs broadcast email among headache specialists",
+          "cite": "Veeva CLM 2025"
+        }
+      ]
+    },
+    "primaryResearch": {
+      "synthesisConfidence": 82,
+      "evidenceUnits": 412,
+      "synthesis": "High-frequency episodic and chronic migraine patients are increasingly steered toward oral CGRPs at first preventive failure. IV reframing outperforms efficacy-led messaging by 2.4x in HCP recall when paired with onset-of-action evidence from PROMISE-1.",
+      "kolInterviews": [
+        {
+          "tier": "T1 KOL",
+          "name": "Dr. R.B.",
+          "org": "Headache Center, Northeast AMC",
+          "quotes": 5,
+          "quote": "My switch trigger is really about giving patients something that feels different. The IV ritual itself - four times a year, done - that is a story patients tell themselves.",
+          "themes": [
+            "ritual and differentiation",
+            "patient adherence"
+          ]
+        },
+        {
+          "tier": "T1 KOL",
+          "name": "Dr. M.S.",
+          "org": "Midwest Headache Clinic",
+          "quotes": 3,
+          "quote": "Where I see Vyepti winning is the 2-4 prior failures crowd. By then the patient has lost faith. Showing them a Day 1 effect is a clinical reset.",
+          "themes": [
+            "onset of action",
+            "prior failure positioning"
+          ]
+        },
+        {
+          "tier": "T2 KOL",
+          "name": "Dr. J.P.",
+          "org": "Community Neurology, FL",
+          "quotes": 2,
+          "quote": "Honestly the biggest blocker for me is logistics. Where do I send them? That is a referral pathway question, not an efficacy one.",
+          "themes": [
+            "infusion access barrier"
+          ]
+        }
+      ],
+      "hcpSurvey": {
+        "n": 412,
+        "fielded": "May 2026",
+        "topUnmetNeeds": [
+          {
+            "label": "Onset of effect",
+            "pct": 68,
+            "color": "teal"
+          },
+          {
+            "label": "Tolerability",
+            "pct": 54,
+            "color": "brand"
+          },
+          {
+            "label": "Dosing convenience",
+            "pct": 47,
+            "color": "brand"
+          },
+          {
+            "label": "Reimbursement clarity",
+            "pct": 39,
+            "color": "ink"
+          }
+        ],
+        "awarenessOfOnset": 60
+      },
+      "socialSignal": [
+        {
+          "source": "Twitter/X - neurology HCPs",
+          "trend": "+34% MoM",
+          "trendType": "ok",
+          "insight": "Spike in mentions of preventive failure fatigue as the dominant social topic."
+        },
+        {
+          "source": "AHS 2026 abstract preview",
+          "trend": "17 sessions",
+          "trendType": "brand",
+          "insight": "3 oral sessions reference Vyepti DELIVER data. Competitor AbbVie presenting 5 on Qulipta."
+        },
+        {
+          "source": "HCP communities - Sermo",
+          "trend": "flat",
+          "trendType": "warn",
+          "insight": "Discussion volume on IV preventives plateaued. Suggests reframe is needed."
+        }
+      ],
+      "competitive": [
+        {
+          "brand": "Vyepti",
+          "generic": "eptinezumab",
+          "share": 14.2,
+          "trend": 0.8,
+          "highlight": true
+        },
+        {
+          "brand": "Aimovig",
+          "generic": "erenumab",
+          "share": 22.1,
+          "trend": -0.3,
+          "highlight": false
+        },
+        {
+          "brand": "Ajovy",
+          "generic": "fremanezumab",
+          "share": 19.4,
+          "trend": 0.0,
+          "highlight": false
+        },
+        {
+          "brand": "Emgality",
+          "generic": "galcanezumab",
+          "share": 18.9,
+          "trend": -0.6,
+          "highlight": false
+        },
+        {
+          "brand": "Qulipta",
+          "generic": "atogepant",
+          "share": 15.3,
+          "trend": 2.1,
+          "highlight": false
+        },
+        {
+          "brand": "Nurtec",
+          "generic": "rimegepant",
+          "share": 10.1,
+          "trend": 1.5,
+          "highlight": false
+        }
+      ]
+    },
+    "alignAudience": {
+      "themes": [
+        {
+          "rank": 1,
+          "title": "Day 1 onset - the preventive that starts working immediately",
+          "resonance": 84,
+          "level": "high",
+          "description": "Address the #1 unmet need (68% of surveyed HCPs) with the strongest differentiator vs orals. Pairs PROMISE-1 evidence with patient-experience framing.",
+          "citations": [
+            "PROMISE-1 S2.4",
+            "PROMISE-2 S3.1"
+          ],
+          "kolCount": 3,
+          "mlrStatus": "pre-cleared",
+          "color": "teal"
+        },
+        {
+          "rank": 2,
+          "title": "A reset for patients with prior preventive failures",
+          "resonance": 79,
+          "level": "high",
+          "description": "Anchor on DELIVER trial - efficacy in patients with 2-4 prior preventive failures. KOL Dr. M.S. explicitly raised this as a clinical reset framing.",
+          "citations": [
+            "DELIVER 2023"
+          ],
+          "kolCount": 2,
+          "mlrStatus": "pre-cleared",
+          "color": "teal"
+        },
+        {
+          "rank": 3,
+          "title": "Quarterly cadence - predictability built into the regimen",
+          "resonance": 63,
+          "level": "mid",
+          "description": "Q3 dosing as adherence advantage. Caveat: 42% of PCPs unaware of in-office infusion access - must pair with referral pathway content.",
+          "citations": [
+            "Prescribing Info S2"
+          ],
+          "kolCount": 0,
+          "mlrStatus": "warn",
+          "color": "brand"
+        },
+        {
+          "rank": 4,
+          "title": "Tolerability story - low DC rate in pivotal trials",
+          "resonance": 41,
+          "level": "low",
+          "description": "De-prioritized - class-wide claim, weak differentiation.",
+          "citations": [],
+          "kolCount": 0,
+          "mlrStatus": null,
+          "color": "ink"
+        }
+      ],
+      "segments": [
+        {
+          "label": "Tier 1 KOLs",
+          "count": 140,
+          "desc": "UCNS-certified headache specialists at AMCs",
+          "matchPct": 92,
+          "matchColor": "ok"
+        },
+        {
+          "label": "Tier 2 - High-vol. neuros",
+          "count": 580,
+          "desc": "Migraine Rx volume top decile, multi-physician",
+          "matchPct": 81,
+          "matchColor": "ok"
+        },
+        {
+          "label": "General neurologists",
+          "count": 15480,
+          "desc": "All US-licensed neurologists outside T1/T2",
+          "matchPct": 62,
+          "matchColor": "teal"
+        },
+        {
+          "label": "High-prescribing PCPs",
+          "count": 2200,
+          "desc": "30+ preventive Rx in trailing 12 months",
+          "matchPct": 47,
+          "matchColor": "warn"
+        }
+      ]
+    },
+    "campaignBrief": {
+      "version": "v0.4 draft",
+      "author": "Maya Chen - HCP Marketing",
+      "date": "20 May 2026",
+      "sections": [
+        {
+          "num": "01",
+          "heading": "Objective",
+          "content": "Drive a +2.4 pt share-of-voice lift for Vyepti vs the CGRP class among neurologists, headache specialists and high-prescribing PCPs. Activate the infusion referral pathway in PCP-treated patients with prior preventive failures. Reach 9,500 Tier 1+2 HCPs by 30 November 2026."
+        },
+        {
+          "num": "02",
+          "heading": "Strategic Positioning",
+          "content": "Reframe Vyepti from another preventive option to the preventive that starts working from Day 1. Lead with onset-of-action evidence from PROMISE-1 and PROMISE-2, supported by the 2-4 prior-failure positioning from DELIVER 2023. Pair every PCP-facing asset with infusion-site mapping."
+        },
+        {
+          "num": "03",
+          "heading": "Messaging Pillars",
+          "pillars": [
+            {
+              "id": "P1",
+              "title": "Day 1 onset of preventive effect",
+              "color": "teal"
+            },
+            {
+              "id": "P2",
+              "title": "Clinical reset for prior-failure patients",
+              "color": "teal"
+            },
+            {
+              "id": "P3",
+              "title": "Quarterly cadence + infusion access",
+              "color": "brand"
+            }
+          ]
+        },
+        {
+          "num": "04",
+          "heading": "Target Audience",
+          "content": "Primary: T1 KOLs (~140) and T2 high-volume neurologists (~580) for peer-led and Veeva CLM activation. Secondary: General neurologists (~15,480) via HCP portal and programmatic display. Tertiary: High-prescribing PCPs (~2,200) via email and infusion-site map."
+        },
+        {
+          "num": "05",
+          "heading": "KPIs",
+          "kpis": [
+            {
+              "label": "SoV lift",
+              "target": "+2.4 pts",
+              "by": "30 Nov 2026"
+            },
+            {
+              "label": "HCPs reached",
+              "target": "9,500",
+              "by": "30 Nov 2026"
+            },
+            {
+              "label": "Infusion referrals",
+              "target": "+18%",
+              "by": "Q3 close"
+            },
+            {
+              "label": "Engagement rate",
+              "target": "3x+",
+              "by": "vs baseline"
+            }
+          ]
+        }
+      ]
+    },
+    "contentStrategy": {
+      "channelMatrix": [
+        {
+          "channel": "Veeva CLM",
+          "subLabel": "IVA - in-person details",
+          "t1": true,
+          "t2": true,
+          "gen": false,
+          "pcp": false,
+          "variants": 4
+        },
+        {
+          "channel": "HCP Portal",
+          "subLabel": "Long-form, on-demand",
+          "t1": true,
+          "t2": true,
+          "gen": true,
+          "pcp": true,
+          "variants": 8
+        },
+        {
+          "channel": "Targeted Email",
+          "subLabel": "3-touch sequence",
+          "t1": false,
+          "t2": true,
+          "gen": true,
+          "pcp": true,
+          "variants": 9
+        },
+        {
+          "channel": "Congress (AHS 2026)",
+          "subLabel": "Symposium - booth - KOL",
+          "t1": true,
+          "t2": true,
+          "gen": false,
+          "pcp": false,
+          "variants": 3
+        },
+        {
+          "channel": "Programmatic Display",
+          "subLabel": "HCP-targeted endemic",
+          "t1": false,
+          "t2": false,
+          "gen": true,
+          "pcp": true,
+          "variants": 4
+        },
+        {
+          "channel": "Peer-to-Peer",
+          "subLabel": "KOL-led webinars",
+          "t1": true,
+          "t2": true,
+          "gen": false,
+          "pcp": false,
+          "variants": 2
+        }
+      ],
+      "personalizationRules": [
+        {
+          "id": "RULE 01",
+          "rule": "If HCP segment = T1/T2 then lead with KOL-attributed onset message",
+          "pillar": "P1 - Day 1 onset",
+          "status": "active"
+        },
+        {
+          "id": "RULE 02",
+          "rule": "If HCP prior Rx includes 2+ CGRP class then surface DELIVER prior-failure narrative",
+          "pillar": "P2 - prior preventive failure reset",
+          "status": "active"
+        },
+        {
+          "id": "RULE 03",
+          "rule": "If audience = PCP then always pair with territory infusion-site map",
+          "pillar": "Addresses 42% PCP unaware-of-access",
+          "status": "active"
+        },
+        {
+          "id": "RULE 04",
+          "rule": "If congress = AHS 2026 then activate peer panel and case study format",
+          "pillar": "High-resonance format from AHS 2024",
+          "status": "active"
+        }
+      ],
+      "generationPlan": {
+        "totalVariants": 30,
+        "modularComponents": 12,
+        "subjectLinesPerEmail": 4,
+        "languages": "EN-US",
+        "estTimeSeconds": 158
+      }
+    },
+    "generateVariants": {
+      "total": 30,
+      "shown": 6,
+      "variants": [
+        {
+          "id": "GS-IVA-001",
+          "channel": "Veeva CLM",
+          "segment": "T1 KOL",
+          "type": "IVA",
+          "headline": "The preventive that starts working from Day 1",
+          "citation": "P-1 S2.4",
+          "pillar": "P1",
+          "quality": 4,
+          "bgColor": "brand"
+        },
+        {
+          "id": "GS-WEB-014",
+          "channel": "HCP Portal",
+          "segment": "T2 Neuro",
+          "type": "Article",
+          "headline": "A clinical reset for patients with 2-4 prior failures",
+          "citation": "DELIVER",
+          "pillar": "P2",
+          "quality": 4,
+          "bgColor": "white"
+        },
+        {
+          "id": "GS-EML-021",
+          "channel": "Email",
+          "segment": "High-Rx PCPs",
+          "type": "Email T+1",
+          "headline": "When orals stop working - meet your patient where they are",
+          "citation": null,
+          "pillar": "P2",
+          "quality": 4,
+          "bgColor": "ink"
+        },
+        {
+          "id": "GS-CNG-007",
+          "channel": "Congress",
+          "segment": "T1 KOL",
+          "type": "AHS Booth",
+          "headline": "From clinical signal to clinical reset",
+          "citation": null,
+          "pillar": "P1",
+          "quality": 5,
+          "bgColor": "teal"
+        },
+        {
+          "id": "GS-DSP-019",
+          "channel": "Display",
+          "segment": "High-Rx PCPs",
+          "type": "300x250",
+          "headline": "4 infusions. 365 days.",
+          "citation": null,
+          "pillar": "P3",
+          "quality": 3,
+          "bgColor": "brand-light"
+        },
+        {
+          "id": "GS-P2P-024",
+          "channel": "P2P",
+          "segment": "T1 + T2",
+          "type": "Webinar",
+          "headline": "The first 24 hours of preventive effect: a panel discussion",
+          "citation": null,
+          "pillar": "P1",
+          "quality": 5,
+          "bgColor": "dark"
+        }
+      ]
+    },
+    "mlrCompliance": {
+      "kpis": [
+        {
+          "label": "Variants in review",
+          "value": "30",
+          "sub": "Across 6 channels",
+          "type": "default"
+        },
+        {
+          "label": "Flagged for review",
+          "value": "3",
+          "sub": "2 high - 1 medium",
+          "type": "risk"
+        },
+        {
+          "label": "Cleared by Viden",
+          "value": "27",
+          "sub": "All claims sourced",
+          "type": "ok"
+        },
+        {
+          "label": "Audit-ready",
+          "value": "100%",
+          "sub": "Full provenance",
+          "type": "default"
+        }
+      ],
+      "flaggedVariants": [
+        {
+          "id": "GS-DSP-019",
+          "channel": "Display 300x250",
+          "segment": "High-Rx PCP",
+          "severity": "High",
+          "issues": [
+            {
+              "type": "risk",
+              "title": "Missing fair balance",
+              "detail": "Asset presents efficacy claim without paired safety information. Required per Vyepti brand guidelines S4.2.",
+              "rule": "ISI-FB-001 - MLR policy v3.1"
+            },
+            {
+              "type": "warn",
+              "title": "Tone risk: oversimplification",
+              "detail": "4 infusions. 365 days. may imply 365-day continuous coverage without acknowledging Q3 dosing intervals."
+            }
+          ],
+          "suggestedFix": "Add a 60-character ISI strip beneath the CTA referencing hypersensitivity reactions. Replace 365 days with year-round preventive cadence."
+        },
+        {
+          "id": "GS-EML-023",
+          "channel": "Email T+2",
+          "segment": "High-Rx PCP",
+          "severity": "High",
+          "issues": [
+            {
+              "type": "risk",
+              "title": "Comparative superiority claim",
+              "detail": "Subject line works better than orals constitutes an unsupported superiority claim. No head-to-head trial data exists vs oral CGRPs.",
+              "rule": "MLR policy S2.1 - FDA guidance on comparative claims"
+            }
+          ],
+          "suggestedFix": "Replace subject line with A different modality for patients with prior CGRP failures - positions IV as alternative, not superior."
+        }
+      ],
+      "approvals": [
+        {
+          "name": "Maya Chen",
+          "role": "Sr. Director, HCP Marketing",
+          "date": "22 Aug 16:31",
+          "status": "approved"
+        },
+        {
+          "name": "Dr. D. Ramos",
+          "role": "Sr. Medical Director - Neuro",
+          "date": "23 Aug 11:08",
+          "status": "approved"
+        },
+        {
+          "name": "S. Kowalski",
+          "role": "MLR lead",
+          "date": "23 Aug 14:58",
+          "status": "approved"
+        }
+      ]
+    },
+    "launchCampaign": {
+      "summaryKpis": [
+        {
+          "label": "Variants approved",
+          "value": "27",
+          "sub": "3 revised - all cleared",
+          "type": "ok"
+        },
+        {
+          "label": "Channels staged",
+          "value": "6",
+          "sub": "All assets uploaded",
+          "type": "ok"
+        },
+        {
+          "label": "MLR sign-offs",
+          "value": "3 / 3",
+          "sub": "Chen - Ramos - Kowalski",
+          "type": "ok"
+        },
+        {
+          "label": "HCPs in list",
+          "value": "18,400",
+          "sub": "CRM segments refreshed",
+          "type": "default"
+        }
+      ],
+      "channelSchedule": [
+        {
+          "channel": "Veeva CLM",
+          "subLabel": "Rep-led IVA",
+          "topVariant": "GS-IVA-001",
+          "moreCount": 3,
+          "segment": "T1 KOL - T2 Neuro",
+          "goLive": "14 Sep 2026",
+          "status": "ready"
+        },
+        {
+          "channel": "HCP Portal",
+          "subLabel": "Long-form article",
+          "topVariant": "GS-WEB-014",
+          "moreCount": 7,
+          "segment": "All segments",
+          "goLive": "14 Sep 2026",
+          "status": "ready"
+        },
+        {
+          "channel": "Email - Touch 1",
+          "subLabel": "3-touch sequence",
+          "topVariant": "GS-EML-021",
+          "moreCount": 8,
+          "segment": "T2 Neuro - PCPs",
+          "goLive": "14 Sep 2026",
+          "status": "ready"
+        },
+        {
+          "channel": "Congress (AHS)",
+          "subLabel": "Booth - symposium",
+          "topVariant": "GS-CNG-007",
+          "moreCount": 2,
+          "segment": "T1 KOL - T2 Neuro",
+          "goLive": "21 Sep 2026",
+          "status": "ready"
+        },
+        {
+          "channel": "Programmatic Display",
+          "subLabel": "HCP endemic",
+          "topVariant": "GS-DSP-019",
+          "moreCount": 3,
+          "segment": "Gen. Neuro - PCPs",
+          "goLive": "14 Sep 2026",
+          "status": "ready"
+        },
+        {
+          "channel": "P2P Webinar",
+          "subLabel": "KOL-led - 60 min",
+          "topVariant": "GS-P2P-024",
+          "moreCount": 1,
+          "segment": "T1 KOL - T2 Neuro",
+          "goLive": "14 Oct 2026",
+          "status": "registered"
+        }
+      ],
+      "checklist": [
+        {
+          "item": "All 27 variants MLR-approved",
+          "detail": "23 Aug - S. Kowalski",
+          "done": true
+        },
+        {
+          "item": "CRM audience lists refreshed",
+          "detail": "18,400 HCPs - NPI-verified",
+          "done": true
+        },
+        {
+          "item": "Veeva CLM assets uploaded",
+          "detail": "4 IVAs - rep training complete",
+          "done": true
+        },
+        {
+          "item": "Email system QA passed",
+          "detail": "Rendering - unsubscribe - ISI",
+          "done": true
+        },
+        {
+          "item": "Infusion-site map data current",
+          "detail": "3,214 sites - updated 12 Sep",
+          "done": true
+        },
+        {
+          "item": "Fair balance ISI paired on all assets",
+          "detail": "OPDP-compliant - verified",
+          "done": true
+        },
+        {
+          "item": "KE performance monitoring armed",
+          "detail": "Fatigue - engagement alerts on",
+          "done": true
+        }
+      ]
+    },
+    "analytics": {
+      "dayInFlight": 47,
+      "totalDays": 78,
+      "kpis": [
+        {
+          "label": "Share-of-voice lift",
+          "value": "+1.8",
+          "unit": "pts",
+          "target": "vs +2.4 target",
+          "status": "tracking"
+        },
+        {
+          "label": "HCPs reached",
+          "value": "7,200",
+          "unit": "",
+          "target": "76% of 9,500",
+          "status": "tracking"
+        },
+        {
+          "label": "Infusion referrals",
+          "value": "+14%",
+          "unit": "",
+          "target": "vs +18% target",
+          "status": "tracking"
+        },
+        {
+          "label": "Engagement rate",
+          "value": "4.1x",
+          "unit": "",
+          "target": "vs 1.9x baseline",
+          "status": "exceeding"
+        }
+      ],
+      "engagementChart": {
+        "allChannels": [
+          {
+            "week": "Wk 1",
+            "total": 2200,
+            "veevaCLM": 1800,
+            "email": 1400,
+            "display": 800
+          },
+          {
+            "week": "Wk 2",
+            "total": 3100,
+            "veevaCLM": 2400,
+            "email": 2000,
+            "display": 1100
+          },
+          {
+            "week": "Wk 3",
+            "total": 4200,
+            "veevaCLM": 3100,
+            "email": 2800,
+            "display": 1400
+          },
+          {
+            "week": "Wk 4",
+            "total": 5100,
+            "veevaCLM": 3800,
+            "email": 3200,
+            "display": 1600
+          },
+          {
+            "week": "Wk 5",
+            "total": 6300,
+            "veevaCLM": 4500,
+            "email": 3800,
+            "display": 1900
+          },
+          {
+            "week": "Wk 6",
+            "total": 7400,
+            "veevaCLM": 5200,
+            "email": 4200,
+            "display": 2100
+          },
+          {
+            "week": "Wk 7",
+            "total": 7800,
+            "veevaCLM": 5600,
+            "email": 3900,
+            "display": 2200
+          },
+          {
+            "week": "Wk 8",
+            "total": 6900,
+            "veevaCLM": 5100,
+            "email": 3200,
+            "display": 2000
+          },
+          {
+            "week": "Wk 9",
+            "total": 6200,
+            "veevaCLM": 4800,
+            "email": 2800,
+            "display": 1800
+          },
+          {
+            "week": "Wk 10",
+            "total": 5800,
+            "veevaCLM": 4600,
+            "email": 2400,
+            "display": 1700
+          }
+        ],
+        "byWave": {
+          "W1 - Launch": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "W2 - AHS Peak": [
+            4,
+            5,
+            6
+          ],
+          "W3 - Sustain": [
+            7,
+            8,
+            9
+          ]
+        }
+      },
+      "winningVariants": [
+        {
+          "rank": 1,
+          "id": "GS-IVA-001",
+          "name": "Day 1 onset",
+          "channel": "Veeva CLM",
+          "segment": "T1 KOL",
+          "engagement": 1847,
+          "ctr": "12.4%",
+          "vsAvg": "+218%",
+          "flagged": false
+        },
+        {
+          "rank": 2,
+          "id": "GS-CNG-007",
+          "name": "AHS peer panel",
+          "channel": "Congress",
+          "segment": "T1 KOL",
+          "engagement": 1210,
+          "ctr": "18.7%",
+          "vsAvg": "+184%",
+          "flagged": false
+        },
+        {
+          "rank": 3,
+          "id": "GS-WEB-014",
+          "name": "Clinical reset",
+          "channel": "HCP Portal",
+          "segment": "T2 Neuro",
+          "engagement": 982,
+          "ctr": "8.9%",
+          "vsAvg": "+127%",
+          "flagged": false
+        },
+        {
+          "rank": 4,
+          "id": "GS-P2P-024",
+          "name": "First 24 hrs panel",
+          "channel": "P2P",
+          "segment": "T1 + T2",
+          "engagement": 412,
+          "ctr": "-",
+          "vsAvg": "+62%",
+          "flagged": false
+        },
+        {
+          "rank": 5,
+          "id": "GS-EML-021",
+          "name": "When orals stop working",
+          "channel": "Email",
+          "segment": "High-Rx PCPs",
+          "engagement": 340,
+          "ctr": "2.1%",
+          "vsAvg": "-38%",
+          "flagged": true
+        }
+      ],
+      "segmentHeat": [
+        {
+          "segment": "T1 KOLs",
+          "pct": 92,
+          "color": "ok"
+        },
+        {
+          "segment": "T2 Neuro",
+          "pct": 81,
+          "color": "ok"
+        },
+        {
+          "segment": "Gen. Neuro",
+          "pct": 64,
+          "color": "teal"
+        },
+        {
+          "segment": "High-Rx PCPs",
+          "pct": 42,
+          "color": "warn"
+        }
+      ],
+      "fatigueSignal": {
+        "channel": "Email - High-Rx PCP",
+        "ctrStart": 3.8,
+        "ctrCurrent": 2.1,
+        "openRateDrop": 28,
+        "confidence": 86
+      }
+    },
+    "refreshContent": {
+      "fatiguedVariants": [
+        {
+          "id": "GS-EML-021",
+          "headline": "When orals stop working - meet your patient where they are",
+          "type": "Email - High-Rx PCP",
+          "daysInMarket": 42,
+          "metric": "CTR down 45%",
+          "severity": "warn"
+        },
+        {
+          "id": "GS-EML-022",
+          "headline": "A different preventive modality for your hardest patients",
+          "type": "Email - High-Rx PCP",
+          "daysInMarket": 35,
+          "metric": "Open rate down 28%",
+          "severity": "warn"
+        },
+        {
+          "id": "GS-DSP-019",
+          "headline": "4 infusions. Year-round preventive cadence.",
+          "type": "Display - PCP",
+          "daysInMarket": 38,
+          "metric": "Approaching saturation",
+          "severity": "neutral"
+        }
+      ],
+      "proposedMoves": [
+        {
+          "moveId": "MOVE 01",
+          "type": "ok",
+          "title": "Refresh PCP email - Pillar P3 anchor",
+          "impact": "est. +0.4 pts SoV",
+          "detail": "Pivot from prior failure framing to quarterly cadence plus nearby infusion site. Addresses the access barrier identified in primary research.",
+          "newSubjectLines": [
+            "4 infusion appointments. 0 daily pills. Find a nearby site.",
+            "Where your patients can receive Vyepti - closer than you think",
+            "Q3 dosing meets your patient's calendar",
+            "An infusion site within 8 miles of your practice"
+          ]
+        },
+        {
+          "moveId": "MOVE 02",
+          "type": "brand",
+          "title": "Expand GS-IVA-001 to General Neurology",
+          "impact": "Est. reach +5,200 HCPs",
+          "detail": "The winning Day 1 onset IVA was scoped to T1/T2 only. With proven engagement, GenStudio recommends adapting it for the General Neurology segment.",
+          "confidence": 78
+        },
+        {
+          "moveId": "MOVE 03",
+          "type": "ink",
+          "title": "Throttle Display (saturating)",
+          "impact": "Redirect budget",
+          "detail": "Reduce programmatic display spend 40% in W3 - frequency cap reached on PCP segment. Redirect budget to Move 01."
+        }
+      ],
+      "generationQueue": [
+        {
+          "label": "Email subject lines",
+          "count": "4 new",
+          "pct": 68
+        },
+        {
+          "label": "Email body variants",
+          "count": "2 new",
+          "pct": 45
+        },
+        {
+          "label": "IVA - General Neuro",
+          "count": "1 adapted",
+          "pct": 82
+        },
+        {
+          "label": "Infusion-site map",
+          "count": "1 refresh",
+          "pct": 92
+        }
+      ]
+    },
+    "storeLearnings": {
+      "finalKpis": [
+        {
+          "label": "SoV lift - final",
+          "value": "+2.6 pts",
+          "target": "vs +2.4 target",
+          "type": "ok"
+        },
+        {
+          "label": "HCPs reached",
+          "value": "11,840",
+          "target": "vs 9,500 target",
+          "type": "ok"
+        },
+        {
+          "label": "Infusion referrals",
+          "value": "+21%",
+          "target": "vs +18% target",
+          "type": "ok"
+        },
+        {
+          "label": "Time-to-launch",
+          "value": "6 wks",
+          "target": "vs 14 wks prior",
+          "type": "default"
+        }
+      ],
+      "heroBanner": "Vyepti closed Q3 with a +2.6 pts SoV lift exceeding the +2.4 pt target. The mid-flight refresh on PCP email recovered fatigue and added an estimated +0.4 pts on its own.",
+      "keWriteBack": [
+        {
+          "title": "Winning variants and archetypes",
+          "detail": "GS-IVA-001 Day 1 onset IVA and GS-CNG-007 AHS peer panel have been promoted to the canonical Vyepti playbook as Tier 1 anchors.",
+          "tags": [
+            "2 canonical templates",
+            "Tagged Day-1-onset and KOL-led"
+          ]
+        },
+        {
+          "title": "New audience insights discovered",
+          "insights": [
+            "PCP email fatigue threshold for Vyepti messaging is ~35 days. Refresh creative before Day 30 next cycle.",
+            "General Neurology segment over-indexed by 22% on KOL-attributed messaging when expanded from T1/T2 IVAs.",
+            "Infusion-site map clicks correlate with referrals at r = 0.71. Confirms research hypothesis on PCP access barrier.",
+            "AHS booth peer panels drive 3.4x the symposium engagement vs broadcast formats."
+          ]
+        },
+        {
+          "title": "Provenance and audit trail",
+          "detail": "Every claim, citation, MLR decision and engagement data point is hashed and stored. 247 decision artifacts available for OPDP audit or internal compliance review."
+        }
+      ],
+      "nextCampaign": {
+        "title": "Q1 2027 - Patient adherence story",
+        "detail": "Build on Vyepti Q3 momentum with a patient-facing adherence campaign anchored on the predictable cadence theme that resonated mid-flight in W3.",
+        "preWarmed": [
+          "6 new insights from this campaign",
+          "2 canonical IVA templates ready to adapt",
+          "Infusion-site dataset already current",
+          "3 KOLs pre-engaged from AHS panel"
+        ]
+      },
+      "timeSaved": {
+        "weeks": 8,
+        "detail": "Cycle time reduced from 14 weeks prior Vyepti campaign to 6 weeks. Viden Engine accelerated brief, creative, and MLR."
+      }
+    }
+  }
+}
