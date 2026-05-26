@@ -7,22 +7,15 @@ import {
   ChevronLeft,
   ChevronRight,
   Zap,
+  Home,
 } from 'lucide-react'
 import { useApp } from '../../context/AppContext.jsx'
 
-// ── Icon map (matches data.json navigation icon field) ────────────────────────
 const ICON_MAP = {
   Search:     Search,
   FileText:   FileText,
   Layers:     Layers,
   PlayCircle: PlayCircle,
-}
-
-// ── Actor dot colors ──────────────────────────────────────────────────────────
-const ACTOR_COLORS = {
-  user: 'bg-blue-400',
-  ke:   'bg-purple-400',
-  gs:   'bg-emerald-400',
 }
 
 export default function Sidebar() {
@@ -33,6 +26,7 @@ export default function Sidebar() {
     sidebarExpanded,
     setSidebarExpanded,
     goToPhase,
+    goToScreen,
     isPhaseComplete,
   } = useApp()
 
@@ -54,11 +48,15 @@ export default function Sidebar() {
       >
         {sidebarExpanded && (
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 bg-brand-800 rounded-md flex items-center justify-center flex-shrink-0">
+            <div className="w-6 h-6 bg-brand-800 rounded-md flex items-center
+                            justify-center flex-shrink-0">
               <Zap size={12} className="text-teal-400" />
             </div>
-            <span className="font-display font-semibold text-sm text-ink-900 tracking-tight">
-              Viden <em className="not-italic text-teal-700">Engine</em>
+            <span
+              className="font-semibold text-sm text-ink-900 tracking-tight"
+              style={{ fontFamily: 'Geist, sans-serif' }}
+            >
+              Viden <span className="text-teal-700 font-medium">Engine</span>
             </span>
           </div>
         )}
@@ -77,7 +75,7 @@ export default function Sidebar() {
         </button>
       </div>
 
-      {/* ── Campaign context chip (expanded only) ── */}
+      {/* ── Campaign context chip ── */}
       {sidebarExpanded && (
         <div className="px-3 py-2.5 border-b border-ink-100">
           <div className="flex items-center gap-2 px-2.5 py-2 bg-brand-50
@@ -99,7 +97,31 @@ export default function Sidebar() {
         </div>
       )}
 
-      {/* ── Section label (expanded only) ── */}
+      {/* ── Home button ── */}
+      <div className="px-2 pt-2">
+        <button
+          onClick={() => goToScreen('home')}
+          title={!sidebarExpanded ? 'Home' : undefined}
+          className={`
+            w-full flex items-center rounded-lg
+            transition-all duration-150 cursor-pointer
+            ${sidebarExpanded ? 'gap-3 px-3 py-2.5' : 'justify-center p-3'}
+            ${activeScreenId === 'home'
+              ? 'bg-brand-50 text-brand-800 shadow-[inset_3px_0_0_#1E1B4B]'
+              : 'text-ink-500 hover:bg-ink-50 hover:text-ink-900'
+            }
+          `}
+        >
+          <Home size={18} className="flex-shrink-0" strokeWidth={1.8} />
+          {sidebarExpanded && (
+            <span className="flex-1 text-sm text-left font-medium">
+              Home
+            </span>
+          )}
+        </button>
+      </div>
+
+      {/* ── Section label ── */}
       {sidebarExpanded && (
         <div className="px-4 pt-3 pb-1">
           <span className="text-[10px] font-bold uppercase tracking-widest text-ink-400">
@@ -108,12 +130,12 @@ export default function Sidebar() {
         </div>
       )}
 
-      {/* ── Nav items ── */}
+      {/* ── Phase nav items ── */}
       <nav className="flex-1 px-2 py-2 space-y-0.5 overflow-y-auto scrollbar-thin">
         {data.navigation.map((phase) => {
-          const Icon      = ICON_MAP[phase.icon] ?? Search
-          const isActive  = phase.id === activePhaseId
-          const isDone    = isPhaseComplete(phase.id)
+          const Icon     = ICON_MAP[phase.icon] ?? Search
+          const isActive = phase.id === activePhaseId && activeScreenId !== 'home' && activeScreenId !== 'home'
+          const isDone   = isPhaseComplete(phase.id)
 
           return (
             <button
@@ -123,10 +145,7 @@ export default function Sidebar() {
               className={`
                 w-full flex items-center rounded-lg
                 transition-all duration-150 cursor-pointer
-                ${sidebarExpanded
-                  ? 'gap-3 px-3 py-2.5'
-                  : 'justify-center p-3'
-                }
+                ${sidebarExpanded ? 'gap-3 px-3 py-2.5' : 'justify-center p-3'}
                 ${isActive
                   ? 'bg-brand-50 text-brand-800 shadow-[inset_3px_0_0_#1E1B4B]'
                   : isDone
@@ -135,14 +154,12 @@ export default function Sidebar() {
                 }
               `}
             >
-              {/* Icon */}
               <Icon
                 size={18}
                 className="flex-shrink-0"
                 strokeWidth={isActive ? 2.2 : 1.8}
               />
 
-              {/* Label + badge (expanded only) */}
               {sidebarExpanded && (
                 <>
                   <span className={`
@@ -151,8 +168,6 @@ export default function Sidebar() {
                   `}>
                     {phase.label}
                   </span>
-
-                  {/* Screen count badge */}
                   <span className={`
                     text-[10px] font-mono px-1.5 py-0.5 rounded-full
                     ${isActive
@@ -171,8 +186,8 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* ── Active screen indicator (expanded only) ── */}
-      {sidebarExpanded && (
+      {/* ── Current step indicator ── */}
+      {sidebarExpanded && activeScreenId !== 'home' && (
         <div className="px-3 py-2 border-t border-ink-100">
           <div className="px-3 py-2 bg-ink-50 rounded-lg">
             <div className="text-[10px] font-semibold uppercase tracking-wider
@@ -184,12 +199,7 @@ export default function Sidebar() {
                 if (screen.id !== activeScreenId) return null
                 return (
                   <div key={screen.id} className="flex items-center gap-2">
-                    <span
-                      className={`
-                        w-1.5 h-1.5 rounded-full flex-shrink-0
-                        ${ACTOR_COLORS[screen.actor] ?? 'bg-ink-400'}
-                      `}
-                    />
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-600 flex-shrink-0" />
                     <span className="text-xs font-medium text-ink-700 truncate">
                       {screen.label}
                     </span>
@@ -205,9 +215,7 @@ export default function Sidebar() {
       )}
 
       {/* ── Settings ── */}
-      <div className={`
-        px-2 pb-3 pt-2 border-t border-ink-100
-      `}>
+      <div className="px-2 pb-3 pt-2 border-t border-ink-100">
         <button
           className={`
             w-full flex items-center rounded-lg text-ink-500

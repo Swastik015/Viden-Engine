@@ -7,7 +7,7 @@ export function AppProvider({ children }) {
 
   // ── Navigation state ──────────────────────────────────────────────
   const [activePhaseId,  setActivePhaseId]  = useState('discover')
-  const [activeScreenId, setActiveScreenId] = useState('start-campaign')
+  const [activeScreenId, setActiveScreenId] = useState('home')
   const [sidebarExpanded, setSidebarExpanded] = useState(true)
 
   // ── Filter state ──────────────────────────────────────────────────

@@ -3,6 +3,7 @@ import Sidebar  from './components/layout/Sidebar.jsx'
 import Topbar   from './components/layout/Topbar.jsx'
 import TabBar   from './components/layout/TabBar.jsx'
 
+import S00_Home              from './components/screens/S00_Home.jsx'
 import S01_StartCampaign     from './components/screens/S01_StartCampaign.jsx'
 import S02_PriorIntelligence from './components/screens/S02_PriorIntelligence.jsx'
 import S03_PrimaryResearch   from './components/screens/S03_PrimaryResearch.jsx'
@@ -16,8 +17,8 @@ import S10_Analytics         from './components/screens/S10_Analytics.jsx'
 import S11_RefreshContent    from './components/screens/S11_RefreshContent.jsx'
 import S12_StoreLearnings    from './components/screens/S12_StoreLearnings.jsx'
 
-// ── Screen registry ───────────────────────────────────────────────────────────
 const SCREEN_MAP = {
+  'home':               <S00_Home />,
   'start-campaign':     <S01_StartCampaign />,
   'prior-intelligence': <S02_PriorIntelligence />,
   'primary-research':   <S03_PrimaryResearch />,
@@ -33,7 +34,9 @@ const SCREEN_MAP = {
 }
 
 export default function App() {
-  const { activeScreenId, sidebarExpanded } = useApp()
+  const { activeScreenId } = useApp()
+
+  const isHome = activeScreenId === 'home'
 
   const currentScreen = SCREEN_MAP[activeScreenId] ?? (
     <div className="flex items-center justify-center h-full text-ink-400">
@@ -44,29 +47,21 @@ export default function App() {
   return (
     <div className="flex h-screen overflow-hidden bg-[#F4F3EE]">
 
-      {/* ── Left Sidebar ── */}
       <Sidebar />
 
-      {/* ── Right side: topbar + tabs + content ── */}
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
-
-        {/* Top bar */}
         <Topbar />
-
-        {/* Phase tab bar */}
-        <TabBar />
-
-        {/* Screen content */}
+        {!isHome && <TabBar />}
         <main
           key={activeScreenId}
           className="flex-1 overflow-y-auto scrollbar-thin animate-fadeIn"
         >
-          <div className="p-8 max-w-[1400px]">
+          <div className={isHome ? 'p-8' : 'p-8 max-w-[1400px]'}>
             {currentScreen}
           </div>
         </main>
-
       </div>
+
     </div>
   )
 }
