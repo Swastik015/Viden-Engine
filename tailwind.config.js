@@ -74,7 +74,7 @@ export default {
         },
       },
       fontFamily: {
-        display: ['Fraunces', 'Georgia', 'serif'],
+        display: ['Geist', 'Inter', 'system-ui', 'sans-serif'],
         ui:      ['Geist', 'Inter', 'system-ui', 'sans-serif'],
         mono:    ['Geist Mono', 'JetBrains Mono', 'monospace'],
       },

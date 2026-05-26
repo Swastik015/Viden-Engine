@@ -5,7 +5,7 @@ import AiPip from '../ui/AiPip.jsx'
 import Tag   from '../ui/Tag.jsx'
 
 export default function S01_StartCampaign() {
-  const { data, advance } = useApp()
+  const { data, advance, selectedTheme } = useApp()
   const d = data.screens.startCampaign
 
   const [objectives, setObjectives] = useState(d.objectives)
@@ -32,12 +32,47 @@ export default function S01_StartCampaign() {
             <span className="actor-tag-user">Your action</span>
             <span>Step 01 · Discover</span>
           </div>
-          <h1 className="screen-title">Start a new campaign</h1>
+          <h1
+            className="text-2xl font-semibold text-ink-900 tracking-tight"
+            style={{ fontFamily: 'Geist, sans-serif' }}
+          >
+            Start a new campaign
+          </h1>
           <p className="screen-subtitle">
-            Define the objective, target audience and goals. Viden will surface
-            relevant prior intelligence as you type.
+            Define the objective, target audience and goals. Viden will
+            surface relevant prior intelligence as you type.
           </p>
+
+          {/* Theme pre-load banner */}
+          {selectedTheme && (
+            <div
+              className="mt-3 flex items-center gap-3 px-4 py-2.5 rounded-lg"
+              style={{
+                background: selectedTheme.color.bg,
+                border: `1px solid ${selectedTheme.color.border}`,
+              }}
+            >
+              <span
+                className="text-xs font-bold uppercase tracking-wider
+                           flex-shrink-0"
+                style={{ color: selectedTheme.color.icon }}
+              >
+                Theme pre-loaded
+              </span>
+              <span
+                className="font-semibold text-sm"
+                style={{ color: selectedTheme.color.btn }}
+              >
+                {selectedTheme.title}
+              </span>
+              <span className="text-ink-400 text-xs">
+                · Viden has pre-loaded relevant claims, KOL data and
+                prior intelligence for this theme
+              </span>
+            </div>
+          )}
         </div>
+
         <div className="screen-actions">
           <button className="btn-ghost btn-sm btn">Save draft</button>
           <button className="btn-primary btn" onClick={advance}>
@@ -59,7 +94,11 @@ export default function S01_StartCampaign() {
               <label className="field-label">Campaign name</label>
               <input
                 className="field-input"
-                defaultValue={d.formDefaults.campaignName}
+                defaultValue={
+                  selectedTheme
+                    ? `Vyepti Q3 2026 — ${selectedTheme.title}`
+                    : d.formDefaults.campaignName
+                }
               />
             </div>
 
@@ -171,7 +210,6 @@ export default function S01_StartCampaign() {
             background: 'linear-gradient(180deg, #ECFEFF 0%, #ffffff 40%)',
           }}
         >
-          {/* Card header */}
           <div className="card-head border-teal-100">
             <div className="card-title">
               <AiPip>KE · Live</AiPip>
@@ -180,13 +218,16 @@ export default function S01_StartCampaign() {
           </div>
 
           <div className="card-body space-y-4">
-
-            {/* Intro text */}
             <p className="text-sm text-ink-700 leading-relaxed">
               As you define this campaign, Viden has matched it against{' '}
-              <strong>{d.aiSidekick.priorCampaigns} prior Vyepti campaigns</strong>,
-              the <strong>{d.aiSidekick.evidenceBases.join(' and ')}</strong> evidence
-              base, and current competitive intelligence.
+              <strong>
+                {d.aiSidekick.priorCampaigns} prior Vyepti campaigns
+              </strong>
+              , the{' '}
+              <strong>
+                {d.aiSidekick.evidenceBases.join(' and ')}
+              </strong>{' '}
+              evidence base, and current competitive intelligence.
             </p>
 
             {/* Suggested segments */}
@@ -210,13 +251,14 @@ export default function S01_StartCampaign() {
               </div>
             </div>
 
-            {/* Best match campaign */}
+            {/* Best match */}
             <div className="p-3 bg-white border border-ink-200 rounded-lg">
               <div className="flex items-center justify-between mb-1.5">
                 <span className="text-xs font-semibold text-ink-900">
                   Most similar prior campaign
                 </span>
-                <div className="flex items-center gap-1 font-mono text-xs text-ink-600">
+                <div className="flex items-center gap-1 font-mono text-xs
+                                text-ink-600">
                   Match
                   <MatchBar score={d.aiSidekick.bestMatch.matchScore} />
                   {d.aiSidekick.bestMatch.matchScore}%
@@ -226,7 +268,7 @@ export default function S01_StartCampaign() {
                 {d.aiSidekick.bestMatch.name}
               </div>
               <div className="text-xs text-ink-500">
-                Targeted 2–4 prior preventive failures.{' '}
+                Targeted 2-4 prior preventive failures.{' '}
                 <span className="font-mono text-ok-700">
                   {d.aiSidekick.bestMatch.lift}
                 </span>
@@ -258,7 +300,7 @@ export default function S01_StartCampaign() {
   )
 }
 
-/* ── Match bar (mini confidence dots) ── */
+/* ── Match bar ── */
 function MatchBar({ score }) {
   const filled = Math.round((score / 100) * 5)
   return (
