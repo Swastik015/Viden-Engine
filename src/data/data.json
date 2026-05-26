@@ -409,10 +409,10 @@
       "dayInFlight": 47,
       "totalDays":   78,
       "kpis": [
-        { "label": "Share-of-voice lift", "value": "+1.8", "unit": "pts", "target": "vs +2.4 target",    "status": "tracking"  },
-        { "label": "HCPs reached",        "value": "7,200","unit": "",    "target": "76% of 9,500",       "status": "tracking"  },
-        { "label": "Infusion referrals",  "value": "+14%", "unit": "",    "target": "vs +18% target",     "status": "tracking"  },
-        { "label": "Engagement rate",     "value": "4.1x", "unit": "",    "target": "vs 1.9x baseline",   "status": "exceeding" }
+        { "label": "Open rate",        "value": "38.2%", "unit": "", "target": "vs 28% benchmark",  "status": "exceeding" },
+        { "label": "Click rate (CTR)", "value": "4.1%",  "unit": "", "target": "vs 2.8% benchmark", "status": "exceeding" },
+        { "label": "Engagement rate",  "value": "4.1x",  "unit": "", "target": "vs 1.9x baseline",  "status": "exceeding" },
+        { "label": "HCPs reached",     "value": "7,200", "unit": "", "target": "76% of 9,500",       "status": "tracking"  }
       ],
       "engagementChart": {
         "allChannels": [

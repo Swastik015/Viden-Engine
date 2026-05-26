@@ -1,122 +1,148 @@
-import { useState, useRef } from 'react'
-import { ChevronRight, Search, GripVertical, Plus, X } from 'lucide-react'
+import { useState } from 'react'
+import { ChevronRight, Check, Plus, X, SlidersHorizontal, Star, Users } from 'lucide-react'
 import { useApp } from '../../context/AppContext.jsx'
 import AiPip from '../ui/AiPip.jsx'
 import Tag   from '../ui/Tag.jsx'
 
-const SEARCH_SUGGESTIONS = [
-  { id: 'onset-iv',    title: 'IV onset advantage vs subcutaneous',         resonance: 71 },
-  { id: 'cost-access', title: 'Cost and reimbursement clarity',             resonance: 58 },
-  { id: 'nurse-edu',   title: 'Nurse educator support for infusion visits', resonance: 64 },
-  { id: 'patient-exp', title: 'Patient-reported experience after infusion', resonance: 67 },
-  { id: 'real-world',  title: 'Real-world evidence beyond pivotal trials',  resonance: 73 },
+const ALL_SEGMENTS = [
+  {
+    id:         'tier1-kol',
+    label:      'Tier 1 KOLs',
+    desc:       'UCNS-certified headache specialists at AMCs',
+    count:      140,
+    matchPct:   92,
+    matchColor: 'ok',
+    recommended: true,
+    filters: [
+      { key: 'Specialty',   value: 'Headache neurology' },
+      { key: 'Certification', value: 'UCNS-certified'   },
+      { key: 'Geography',   value: 'United States'      },
+      { key: 'Institution', value: 'Academic Medical Center' },
+    ],
+  },
+  {
+    id:         'tier2-neuro',
+    label:      'Tier 2 — High-vol. Neuros',
+    desc:       'Migraine Rx volume top decile, multi-physician',
+    count:      580,
+    matchPct:   81,
+    matchColor: 'ok',
+    recommended: true,
+    filters: [
+      { key: 'Specialty',   value: 'Neurology'          },
+      { key: 'Rx volume',   value: 'Top decile'         },
+      { key: 'Geography',   value: 'United States'      },
+      { key: 'Practice',    value: 'Multi-physician'    },
+    ],
+  },
+  {
+    id:         'gen-neuro',
+    label:      'General Neurologists',
+    desc:       'All US-licensed neurologists outside T1/T2',
+    count:      15480,
+    matchPct:   62,
+    matchColor: 'teal',
+    recommended: false,
+    filters: [
+      { key: 'Specialty',   value: 'Neurology'          },
+      { key: 'Geography',   value: 'United States'      },
+      { key: 'Rx volume',   value: 'Any'                },
+    ],
+  },
+  {
+    id:         'high-rx-pcp',
+    label:      'High-prescribing PCPs',
+    desc:       '30+ preventive Rx in trailing 12 months',
+    count:      2200,
+    matchPct:   47,
+    matchColor: 'warn',
+    recommended: false,
+    filters: [
+      { key: 'Specialty',   value: 'Primary Care'       },
+      { key: 'Rx volume',   value: '30+ preventive Rx'  },
+      { key: 'Timeframe',   value: 'Trailing 12 months' },
+      { key: 'Geography',   value: 'United States'      },
+    ],
+  },
+  {
+    id:         'infusion-dir',
+    label:      'Infusion Suite Directors',
+    desc:       'Directors of infusion suites and oncology centers',
+    count:      820,
+    matchPct:   38,
+    matchColor: 'warn',
+    recommended: false,
+    filters: [
+      { key: 'Role',        value: 'Director / Manager' },
+      { key: 'Setting',     value: 'Infusion suite'     },
+      { key: 'Geography',   value: 'United States'      },
+    ],
+  },
 ]
 
+const FILTER_OPTIONS = {
+  Specialty:     ['Headache neurology', 'Neurology', 'Primary Care', 'Pain medicine', 'Psychiatry'],
+  Certification: ['UCNS-certified', 'Board-certified', 'Any'],
+  Geography:     ['United States', 'Northeast', 'Southeast', 'Midwest', 'West'],
+  Institution:   ['Academic Medical Center', 'Community hospital', 'Private practice', 'Any'],
+  'Rx volume':   ['Top decile', '30+ preventive Rx', 'Any'],
+  Practice:      ['Multi-physician', 'Solo practice', 'Any'],
+  Timeframe:     ['Trailing 12 months', 'Trailing 6 months', 'Any'],
+  Role:          ['Director / Manager', 'Clinician', 'Any'],
+  Setting:       ['Infusion suite', 'Hospital', 'Outpatient clinic', 'Any'],
+}
+
 export default function S04_AlignAudience() {
-  const { data, advance } = useApp()
-  const d = data.screens.alignAudience
+  const { data, advance, selectedTheme } = useApp()
 
-  const [themes,      setThemes]      = useState(d.themes)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [showResults, setShowResults] = useState(false)
-  const [dragIndex,   setDragIndex]   = useState(null)
-  const [dragOver,    setDragOver]    = useState(null)
-  const dragNode                      = useRef(null)
-
-  // ── Search filtering ──────────────────────────────────────────────
-  const filteredSuggestions = SEARCH_SUGGESTIONS.filter(s =>
-    s.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
-    !themes.find(t => t.id === s.id)
+  const [selected,     setSelected]     = useState(new Set(['tier1-kol', 'tier2-neuro']))
+  const [editingId,    setEditingId]    = useState(null)
+  const [segmentFilters, setSegmentFilters] = useState(
+    Object.fromEntries(ALL_SEGMENTS.map(s => [s.id, [...s.filters]]))
   )
+  const [showAddMore,  setShowAddMore]  = useState(false)
 
-  function addTheme(suggestion) {
-    const newTheme = {
-      id:          suggestion.id,
-      rank:        themes.length + 1,
-      title:       suggestion.title,
-      resonance:   suggestion.resonance,
-      level:       suggestion.resonance >= 70 ? 'high' : 'mid',
-      description: 'Added from search. Viden will pull supporting evidence from the knowledge engine.',
-      citations:   [],
-      kolCount:    0,
-      mlrStatus:   null,
-      color:       'brand',
-    }
-    setThemes(prev => [...prev, newTheme])
-    setSearchQuery('')
-    setShowResults(false)
-  }
-
-  function removeTheme(id) {
-    setThemes(prev => {
-      const updated = prev.filter(t => t.id !== id)
-      return updated.map((t, i) => ({ ...t, rank: i + 1 }))
+  function toggleSelect(id) {
+    setSelected(prev => {
+      const next = new Set(prev)
+      next.has(id) ? next.delete(id) : next.add(id)
+      return next
     })
   }
 
-  // ── Drag and drop ─────────────────────────────────────────────────
-  function handleDragStart(e, index) {
-    setDragIndex(index)
-    dragNode.current = e.currentTarget
-    dragNode.current.addEventListener('dragend', handleDragEnd)
-    setTimeout(() => {
-      if (dragNode.current) {
-        dragNode.current.style.opacity = '0.4'
-      }
-    }, 0)
+  function updateFilter(segId, filterKey, newValue) {
+    setSegmentFilters(prev => ({
+      ...prev,
+      [segId]: prev[segId].map(f =>
+        f.key === filterKey ? { ...f, value: newValue } : f
+      ),
+    }))
   }
 
-  function handleDragEnter(e, index) {
-    e.preventDefault()
-    if (index !== dragIndex) {
-      setDragOver(index)
-    }
+  function removeFilter(segId, filterKey) {
+    setSegmentFilters(prev => ({
+      ...prev,
+      [segId]: prev[segId].filter(f => f.key !== filterKey),
+    }))
   }
 
-  function handleDragOver(e) {
-    e.preventDefault()
+  function addFilter(segId) {
+    const existing = segmentFilters[segId].map(f => f.key)
+    const available = Object.keys(FILTER_OPTIONS).find(k => !existing.includes(k))
+    if (!available) return
+    setSegmentFilters(prev => ({
+      ...prev,
+      [segId]: [...prev[segId], { key: available, value: FILTER_OPTIONS[available][0] }],
+    }))
   }
 
-  function handleDrop(e, index) {
-    e.preventDefault()
-    if (dragIndex === null || dragIndex === index) return
+  const totalSelected = ALL_SEGMENTS
+    .filter(s => selected.has(s.id))
+    .reduce((sum, s) => sum + s.count, 0)
 
-    setThemes(prev => {
-      const updated = [...prev]
-      const [moved] = updated.splice(dragIndex, 1)
-      updated.splice(index, 0, moved)
-      // Recalculate ranks and resonance based on new order
-      return updated.map((t, i) => ({
-        ...t,
-        rank:      i + 1,
-        resonance: Math.max(30, t.resonance - (i * 4)),
-      }))
-    })
-
-    setDragIndex(null)
-    setDragOver(null)
-  }
-
-  function handleDragEnd() {
-    if (dragNode.current) {
-      dragNode.current.style.opacity = '1'
-      dragNode.current.removeEventListener('dragend', handleDragEnd)
-    }
-    dragNode.current = null
-    setDragIndex(null)
-    setDragOver(null)
-  }
-
-  // ── Compute segment resonance based on top theme ──────────────────
-  function getSegmentResonance(seg) {
-    const topTheme = themes[0]
-    if (!topTheme) return seg.matchPct
-    const boost =
-      topTheme.color === 'teal'  ? { ok: 5,   teal: 8,  warn: -4 } :
-      topTheme.color === 'brand' ? { ok: 2,   teal: 3,  warn: 0  } :
-                                   { ok: -2,  teal: 0,  warn: 2  }
-    return Math.min(99, Math.max(20, seg.matchPct + (boost[seg.matchColor] ?? 0)))
-  }
+  const shownSegments = showAddMore
+    ? ALL_SEGMENTS
+    : ALL_SEGMENTS.filter(s => s.recommended || selected.has(s.id) || s.matchPct >= 60)
 
   return (
     <div>
@@ -127,11 +153,11 @@ export default function S04_AlignAudience() {
             <span className="actor-tag-user">Your action</span>
             <span>Step 04 · Discover</span>
           </div>
-          <h1 className="screen-title">Align audience and messaging</h1>
+          <h1 className="screen-title">Align audience</h1>
           <p className="screen-subtitle">
-            Drag themes to reorder by priority. The top theme drives which
-            audience segments resonate most. Search to add new themes from
-            the knowledge engine.
+            Select the audience segments for this campaign. KE has recommended
+            the best-fit segments based on your theme and objectives.
+            Edit filters to refine each segment.
           </p>
         </div>
         <div className="screen-actions">
@@ -143,341 +169,309 @@ export default function S04_AlignAudience() {
         </div>
       </div>
 
-      {/* ── Main layout ── */}
-      <div className="flex gap-5 items-start">
-
-        {/* ── LEFT: Messaging themes ── */}
-        <div className="flex-[1.5]">
-
-          {/* Search bar */}
-          <div className="relative mb-4">
-            <div className="flex items-center gap-2 px-3 py-2.5 bg-white
-                            border border-ink-200 rounded-lg shadow-xs">
-              <Search size={15} className="text-ink-400 flex-shrink-0" />
-              <input
-                value={searchQuery}
-                onChange={e => {
-                  setSearchQuery(e.target.value)
-                  setShowResults(e.target.value.length > 0)
-                }}
-                onFocus={() => setShowResults(searchQuery.length > 0)}
-                onBlur={() => setTimeout(() => setShowResults(false), 200)}
-                placeholder="Search for additional themes and claims..."
-                className="flex-1 text-sm text-ink-900 bg-transparent
-                           outline-none placeholder-ink-400"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => { setSearchQuery(''); setShowResults(false) }}
-                  className="text-ink-400 hover:text-ink-700 transition-colors"
-                >
-                  <X size={14} />
-                </button>
-              )}
+      {/* ── KE Recommendation banner ── */}
+      <div
+        className="card card-pad mb-6 flex items-center justify-between gap-6"
+        style={{
+          background: 'linear-gradient(135deg, #1E1B4B 0%, #2D2A6E 100%)',
+          border: 'none',
+        }}
+      >
+        <div className="flex items-start gap-3">
+          <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center
+                          justify-center flex-shrink-0">
+            <Star size={15} className="text-teal-400 fill-teal-400" />
+          </div>
+          <div>
+            <div className="text-[10px] font-bold uppercase tracking-widest
+                            text-teal-400 mb-1">
+              KE · Recommended segments
             </div>
+            <p className="text-sm text-white font-medium">
+              For the{' '}
+              <strong className="text-teal-300">
+                {selectedTheme?.title ?? 'Onset of Action'}
+              </strong>{' '}
+              theme, Viden recommends{' '}
+              <strong className="text-white">Tier 1 KOLs</strong> and{' '}
+              <strong className="text-white">T2 High-vol. Neurologists</strong>{' '}
+              as primary segments
+            </p>
+            <p className="text-xs text-white/60 mt-0.5">
+              92% and 81% match scores based on prior campaign performance
+              and KOL interview alignment
+            </p>
+          </div>
+        </div>
+        <div className="flex-shrink-0 text-right">
+          <div className="text-2xl font-bold text-white"
+            style={{ fontFamily: 'Geist, sans-serif' }}>
+            {totalSelected.toLocaleString()}
+          </div>
+          <div className="text-xs text-white/60">HCPs selected</div>
+        </div>
+      </div>
 
-            {/* Search results dropdown */}
-            {showResults && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-white
-                              border border-ink-200 rounded-lg shadow-md z-20
-                              overflow-hidden">
-                {filteredSuggestions.length > 0 ? (
-                  <div className="divide-y divide-ink-100">
-                    {filteredSuggestions.map(s => (
-                      <button
-                        key={s.id}
-                        onClick={() => addTheme(s)}
-                        className="w-full flex items-center justify-between
-                                   px-4 py-3 hover:bg-ink-50 transition-colors
-                                   text-left"
+      {/* ── Segment cards ── */}
+      <div className="space-y-4">
+        {shownSegments.map(seg => {
+          const isSelected = selected.has(seg.id)
+          const isEditing  = editingId === seg.id
+          const filters    = segmentFilters[seg.id] ?? seg.filters
+
+          const matchColor =
+            seg.matchPct >= 80 ? '#059669' :
+            seg.matchPct >= 60 ? '#0E7490' :
+            seg.matchPct >= 40 ? '#D97706' : '#E11D48'
+
+          return (
+            <div
+              key={seg.id}
+              className={`
+                card transition-all duration-200
+                ${isSelected ? 'ring-2 ring-brand-300' : ''}
+              `}
+              style={{
+                borderLeft: `4px solid ${isSelected ? '#1E1B4B' : '#E2E4EC'}`,
+              }}
+            >
+              {/* ── Card top row ── */}
+              <div className="p-4">
+                <div className="flex items-start gap-4">
+
+                  {/* Select checkbox */}
+                  <button
+                    onClick={() => toggleSelect(seg.id)}
+                    className={`
+                      w-6 h-6 rounded-md flex items-center justify-center
+                      flex-shrink-0 mt-0.5 border-2 transition-all duration-150
+                      ${isSelected
+                        ? 'bg-brand-800 border-brand-800'
+                        : 'border-ink-300 hover:border-brand-400'
+                      }
+                    `}
+                  >
+                    {isSelected && <Check size={13} className="text-white" />}
+                  </button>
+
+                  {/* Segment info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <h3
+                        className="text-base font-semibold text-ink-900"
+                        style={{ fontFamily: 'Geist, sans-serif' }}
                       >
-                        <div className="flex items-center gap-2">
-                          <Plus size={13} className="text-brand-600
-                                                      flex-shrink-0" />
-                          <span className="text-sm text-ink-800">{s.title}</span>
-                        </div>
-                        <span className="text-xs font-mono text-ink-400">
-                          {s.resonance}% resonance
+                        {seg.label}
+                      </h3>
+                      {seg.recommended && (
+                        <span className="flex items-center gap-1 text-[9px]
+                                         font-bold uppercase tracking-wide
+                                         px-1.5 py-0.5 rounded-full bg-teal-50
+                                         border border-teal-200 text-teal-700">
+                          <Star size={8} className="fill-teal-600 text-teal-600" />
+                          KE Recommended
                         </span>
-                      </button>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="px-4 py-3 text-sm text-ink-400">
-                    No themes found for "{searchQuery}"
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Section header */}
-          <div className="sec-head mb-3">
-            <span className="sec-head-title">Messaging themes</span>
-            <AiPip>KE · drag to reprioritise</AiPip>
-          </div>
-
-          {/* Draggable themes */}
-          <div className="space-y-3">
-            {themes.map((theme, index) => {
-              const colorMap = {
-                teal:  { bg: '#ECFEFF', border: '#A5F3FC', icon: '#0E7490', bar: '#0E7490' },
-                brand: { bg: '#EEF2FF', border: '#C7D2FE', icon: '#4338CA', bar: '#4338CA' },
-                ink:   { bg: '#F6F7FA', border: '#E2E4EC', icon: '#777E94', bar: '#A0A6B8' },
-              }
-              const c     = colorMap[theme.color] ?? colorMap.ink
-              const isTop = index === 0
-
-              return (
-                <div
-                  key={theme.id}
-                  draggable
-                  onDragStart={e => handleDragStart(e, index)}
-                  onDragEnter={e => handleDragEnter(e, index)}
-                  onDragOver={handleDragOver}
-                  onDrop={e => handleDrop(e, index)}
-                  className={`
-                    card transition-all duration-200 select-none
-                    ${dragOver === index ? 'border-brand-400 shadow-md' : ''}
-                    ${isTop ? 'ring-2 ring-brand-200' : ''}
-                  `}
-                  style={{
-                    borderLeft: `4px solid ${c.bar}`,
-                    cursor: 'grab',
-                  }}
-                >
-                  <div className="p-4">
-                    <div className="flex items-start gap-3">
-
-                      {/* Drag handle */}
-                      <div className="flex-shrink-0 mt-1 text-ink-300
-                                      hover:text-ink-600 transition-colors">
-                        <GripVertical size={16} />
-                      </div>
-
-                      {/* Rank badge */}
-                      <div
-                        className="w-7 h-7 rounded-full flex items-center
-                                   justify-center flex-shrink-0 font-bold
-                                   text-xs text-white mt-0.5"
-                        style={{ background: c.bar }}
-                      >
-                        {theme.rank}
-                      </div>
-
-                      {/* Content */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3
-                            className="text-sm font-semibold text-ink-900
-                                       leading-snug"
-                            style={{ fontFamily: 'Geist, sans-serif' }}
-                          >
-                            {theme.title}
-                          </h3>
-                          {isTop && (
-                            <span className="text-[9px] font-bold uppercase
-                                             tracking-wider px-1.5 py-0.5
-                                             rounded-full bg-brand-100
-                                             text-brand-700 flex-shrink-0">
-                              Lead theme
-                            </span>
-                          )}
-                        </div>
-
-                        <p className="text-xs text-ink-500 leading-relaxed mb-2">
-                          {theme.description}
-                        </p>
-
-                        <div className="flex items-center gap-2 flex-wrap">
-                          {theme.citations.map(c => (
-                            <span key={c} className="cite">{c}</span>
-                          ))}
-                          {theme.kolCount > 0 && (
-                            <Tag type="info" dot={false} size="xs">
-                              {theme.kolCount} KOLs
-                            </Tag>
-                          )}
-                          {theme.mlrStatus === 'pre-cleared' && (
-                            <Tag type="ok" dot={false} size="xs">
-                              MLR pre-cleared
-                            </Tag>
-                          )}
-                          {theme.mlrStatus === 'warn' && (
-                            <Tag type="warn" dot={false} size="xs">
-                              Needs fair balance
-                            </Tag>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Resonance score */}
-                      <div className="flex-shrink-0 text-center w-16">
-                        <div
-                          className="text-2xl font-bold tracking-tight"
-                          style={{
-                            color: c.bar,
-                            fontFamily: 'Geist, sans-serif',
-                          }}
-                        >
-                          {theme.resonance}
-                        </div>
-                        <div className="text-[9px] text-ink-400 uppercase
-                                        tracking-wide">
-                          resonance
-                        </div>
-                        <div className="mt-1 h-1 bg-ink-100 rounded-full
-                                        overflow-hidden w-full">
-                          <div
-                            className="h-full rounded-full transition-all
-                                       duration-500"
-                            style={{
-                              width:      `${theme.resonance}%`,
-                              background: c.bar,
-                            }}
-                          />
-                        </div>
-                      </div>
-
-                      {/* Remove button (only for added themes) */}
-                      {!['1','2','3','4'].includes(String(theme.rank)) &&
-                       theme.citations.length === 0 && (
-                        <button
-                          onClick={() => removeTheme(theme.id)}
-                          className="flex-shrink-0 w-6 h-6 rounded-full
-                                     bg-ink-100 flex items-center justify-center
-                                     hover:bg-risk-100 hover:text-risk-700
-                                     transition-colors text-ink-400"
-                        >
-                          <X size={11} />
-                        </button>
                       )}
                     </div>
+                    <p className="text-xs text-ink-500">{seg.desc}</p>
                   </div>
-                </div>
-              )
-            })}
-          </div>
 
-          {/* Instruction hint */}
-          <div className="mt-3 flex items-center gap-2 text-xs text-ink-400">
-            <GripVertical size={13} />
-            <span>Drag cards up or down to reorder theme priority</span>
-          </div>
-
-        </div>
-
-        {/* ── RIGHT: Audience resonance ── */}
-        <div className="flex-1 space-y-4">
-
-          {/* Dynamic resonance card */}
-          <div className="card">
-            <div className="card-head">
-              <div className="card-title">
-                Audience resonance
-              </div>
-              <AiPip>Updates as you reorder</AiPip>
-            </div>
-
-            <div className="p-4 space-y-4">
-              {d.segments.map(seg => {
-                const dynamicPct = getSegmentResonance(seg)
-                const changed    = dynamicPct !== seg.matchPct
-                const color =
-                  dynamicPct >= 80 ? '#059669' :
-                  dynamicPct >= 60 ? '#0E7490' :
-                  dynamicPct >= 40 ? '#D97706' : '#E11D48'
-
-                return (
-                  <div key={seg.label}>
-                    <div className="flex items-center justify-between mb-1">
-                      <div>
-                        <div className="text-sm font-semibold text-ink-900">
-                          {seg.label}
-                        </div>
-                        <div className="text-xs text-ink-400">{seg.desc}</div>
-                      </div>
-                      <div className="text-right">
-                        <div
-                          className="text-xl font-bold tracking-tight"
-                          style={{
-                            color,
-                            fontFamily: 'Geist, sans-serif',
-                          }}
-                        >
-                          {dynamicPct}%
-                        </div>
-                        {changed && (
-                          <div className={`text-[10px] font-mono font-semibold ${
-                            dynamicPct > seg.matchPct
-                              ? 'text-ok-700'
-                              : 'text-risk-700'
-                          }`}>
-                            {dynamicPct > seg.matchPct ? '+' : ''}
-                            {dynamicPct - seg.matchPct} vs default
-                          </div>
-                        )}
-                      </div>
+                  {/* HCP count */}
+                  <div className="flex-shrink-0 text-center">
+                    <div
+                      className="text-xl font-bold text-ink-900"
+                      style={{ fontFamily: 'Geist, sans-serif' }}
+                    >
+                      {seg.count.toLocaleString()}
                     </div>
-                    <div className="h-2 bg-ink-100 rounded-full overflow-hidden">
+                    <div className="text-[10px] text-ink-400">HCPs</div>
+                  </div>
+
+                  {/* Match score */}
+                  <div className="flex-shrink-0 text-center w-16">
+                    <div
+                      className="text-xl font-bold"
+                      style={{ color: matchColor, fontFamily: 'Geist, sans-serif' }}
+                    >
+                      {seg.matchPct}%
+                    </div>
+                    <div className="text-[10px] text-ink-400">match</div>
+                    <div className="mt-1 h-1 bg-ink-100 rounded-full overflow-hidden">
                       <div
-                        className="h-full rounded-full transition-all duration-500"
-                        style={{ width: `${dynamicPct}%`, background: color }}
+                        className="h-full rounded-full"
+                        style={{ width: `${seg.matchPct}%`, background: matchColor }}
                       />
                     </div>
                   </div>
-                )
-              })}
-            </div>
-          </div>
 
-          {/* Top theme insight card */}
-          {themes[0] && (
-            <div
-              className="card card-pad"
-              style={{ background: '#F8F6FF', borderColor: '#E9D5FF' }}
-            >
-              <AiPip className="mb-2">KE · Lead theme insight</AiPip>
-              <p className="text-sm text-ink-800 leading-relaxed">
-                With{' '}
-                <strong className="text-brand-800">{themes[0].title}</strong>{' '}
-                as your lead theme, T1 KOLs and T2 high-volume neurologists
-                are your highest-resonance segments. Consider sequencing
-                KOL-led peer panels before broader channel activation.
-              </p>
-            </div>
-          )}
+                  {/* Edit button */}
+                  <button
+                    onClick={() => setEditingId(isEditing ? null : seg.id)}
+                    className={`
+                      flex items-center gap-1.5 px-3 py-1.5 rounded-lg
+                      text-xs font-semibold transition-colors flex-shrink-0
+                      ${isEditing
+                        ? 'bg-brand-100 text-brand-800'
+                        : 'bg-ink-100 text-ink-600 hover:bg-ink-200'
+                      }
+                    `}
+                  >
+                    <SlidersHorizontal size={12} />
+                    {isEditing ? 'Done' : 'Edit filters'}
+                  </button>
 
-          {/* Segment count summary */}
-          <div className="card card-pad">
-            <div className="text-[10px] font-bold uppercase tracking-wider
-                            text-ink-400 mb-3">
-              Total addressable HCPs
-            </div>
-            <div className="space-y-2">
-              {d.segments.map(seg => (
-                <div key={seg.label}
-                  className="flex items-center justify-between">
-                  <span className="text-xs text-ink-700">{seg.label}</span>
-                  <span className="font-mono text-xs font-semibold text-ink-900">
-                    {seg.count.toLocaleString()}
-                  </span>
                 </div>
-              ))}
-              <div className="pt-2 border-t border-ink-100 flex items-center
-                              justify-between">
-                <span className="text-xs font-semibold text-ink-900">Total</span>
-                <span className="font-mono text-sm font-bold text-brand-800">
-                  {d.segments
-                    .reduce((sum, s) => sum + s.count, 0)
-                    .toLocaleString()}
-                </span>
               </div>
-            </div>
-          </div>
 
-        </div>
+              {/* ── Filter editor (expanded) ── */}
+              {isEditing && (
+                <div
+                  className="border-t border-ink-100 p-4"
+                  style={{ background: '#F8F8FF' }}
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-bold text-ink-700 uppercase
+                                     tracking-wider">
+                      Segment filters
+                    </span>
+                    <span className="text-xs text-ink-400">
+                      {filters.length} filters applied
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {filters.map(filter => (
+                      <div
+                        key={filter.key}
+                        className="flex items-center gap-1 bg-white border
+                                   border-ink-200 rounded-lg overflow-hidden
+                                   shadow-xs"
+                      >
+                        <span className="text-[10px] font-bold text-ink-500
+                                         uppercase tracking-wide px-2 py-1.5
+                                         bg-ink-50 border-r border-ink-200">
+                          {filter.key}
+                        </span>
+                        <select
+                          value={filter.value}
+                          onChange={e =>
+                            updateFilter(seg.id, filter.key, e.target.value)
+                          }
+                          className="text-xs text-ink-800 px-2 py-1.5 bg-white
+                                     focus:outline-none cursor-pointer"
+                        >
+                          {(FILTER_OPTIONS[filter.key] ?? [filter.value]).map(opt => (
+                            <option key={opt} value={opt}>{opt}</option>
+                          ))}
+                        </select>
+                        <button
+                          onClick={() => removeFilter(seg.id, filter.key)}
+                          className="px-1.5 py-1.5 text-ink-300
+                                     hover:text-risk-600 transition-colors"
+                        >
+                          <X size={11} />
+                        </button>
+                      </div>
+                    ))}
+
+                    {/* Add filter button */}
+                    <button
+                      onClick={() => addFilter(seg.id)}
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-lg
+                                 border border-dashed border-ink-300 text-xs
+                                 text-ink-500 hover:border-brand-400
+                                 hover:text-brand-700 transition-colors"
+                    >
+                      <Plus size={11} />
+                      Add filter
+                    </button>
+                  </div>
+
+                  {/* Updated HCP count after filter changes */}
+                  <div className="flex items-center gap-2">
+                    <Users size={13} className="text-ink-400" />
+                    <span className="text-xs text-ink-500">
+                      Estimated reach after filters:
+                    </span>
+                    <span className="text-xs font-bold text-ink-900">
+                      {Math.round(seg.count * (filters.length > seg.filters.length ? 0.7 : 1)).toLocaleString()} HCPs
+                    </span>
+                  </div>
+                </div>
+              )}
+
+            </div>
+          )
+        })}
       </div>
+
+      {/* ── Add more segments ── */}
+      <div className="mt-4">
+        {!showAddMore ? (
+          <button
+            onClick={() => setShowAddMore(true)}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg
+                       border border-dashed border-ink-300 text-sm
+                       text-ink-500 hover:border-brand-400 hover:text-brand-700
+                       transition-colors w-full justify-center"
+          >
+            <Plus size={14} />
+            Show more segments
+          </button>
+        ) : (
+          <button
+            onClick={() => setShowAddMore(false)}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-lg
+                       border border-ink-200 text-sm text-ink-500
+                       hover:border-ink-300 transition-colors w-full
+                       justify-center"
+          >
+            <X size={14} />
+            Show fewer segments
+          </button>
+        )}
+      </div>
+
+      {/* ── Selection summary ── */}
+      {selected.size > 0 && (
+        <div
+          className="mt-6 card card-pad"
+          style={{ background: '#EEF2FF', borderColor: '#C7D2FE' }}
+        >
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-bold text-ink-900">
+              Selected audience
+            </span>
+            <span className="font-mono text-sm font-bold text-brand-800">
+              {totalSelected.toLocaleString()} HCPs total
+            </span>
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            {ALL_SEGMENTS.filter(s => selected.has(s.id)).map(seg => (
+              <div
+                key={seg.id}
+                className="flex items-center gap-2 px-3 py-1.5 bg-white
+                           border border-brand-200 rounded-lg"
+              >
+                <span className="text-xs font-semibold text-brand-900">
+                  {seg.label}
+                </span>
+                <span className="text-xs font-mono text-brand-700">
+                  {seg.count.toLocaleString()}
+                </span>
+                <button
+                  onClick={() => toggleSelect(seg.id)}
+                  className="text-ink-300 hover:text-risk-600
+                             transition-colors"
+                >
+                  <X size={11} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }

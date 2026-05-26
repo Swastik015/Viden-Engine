@@ -7,7 +7,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Zap,
-  Home,
+  LayoutGrid,
 } from 'lucide-react'
 import { useApp } from '../../context/AppContext.jsx'
 
@@ -27,6 +27,7 @@ export default function Sidebar() {
     setSidebarExpanded,
     goToPhase,
     goToScreen,
+    goToHome,
     isPhaseComplete,
   } = useApp()
 
@@ -97,11 +98,11 @@ export default function Sidebar() {
         </div>
       )}
 
-      {/* ── Home button ── */}
+      {/* ── Campaigns button ── */}
       <div className="px-2 pt-2">
         <button
-          onClick={() => goToScreen('home')}
-          title={!sidebarExpanded ? 'Home' : undefined}
+          onClick={() => goToHome()}
+          title={!sidebarExpanded ? 'Campaigns' : undefined}
           className={`
             w-full flex items-center rounded-lg
             transition-all duration-150 cursor-pointer
@@ -112,10 +113,10 @@ export default function Sidebar() {
             }
           `}
         >
-          <Home size={18} className="flex-shrink-0" strokeWidth={1.8} />
+          <LayoutGrid size={18} className="flex-shrink-0" strokeWidth={1.8} />
           {sidebarExpanded && (
             <span className="flex-1 text-sm text-left font-medium">
-              Home
+              Campaigns
             </span>
           )}
         </button>
@@ -124,17 +125,21 @@ export default function Sidebar() {
       {/* ── Section label ── */}
       {sidebarExpanded && (
         <div className="px-4 pt-3 pb-1">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-ink-400">
+          <span className="text-[10px] font-bold uppercase tracking-widest
+                           text-ink-400">
             Campaign
           </span>
         </div>
       )}
 
       {/* ── Phase nav items ── */}
-      <nav className="flex-1 px-2 py-2 space-y-0.5 overflow-y-auto scrollbar-thin">
+      <nav className="flex-1 px-2 py-2 space-y-0.5 overflow-y-auto
+                      scrollbar-thin">
         {data.navigation.map((phase) => {
           const Icon     = ICON_MAP[phase.icon] ?? Search
-          const isActive = phase.id === activePhaseId && activeScreenId !== 'home' && activeScreenId !== 'home'
+          const isActive = phase.id === activePhaseId
+                        && activeScreenId !== 'home'
+                        && activeScreenId !== 'landing'
           const isDone   = isPhaseComplete(phase.id)
 
           return (
@@ -187,7 +192,7 @@ export default function Sidebar() {
       </nav>
 
       {/* ── Current step indicator ── */}
-      {sidebarExpanded && activeScreenId !== 'home' && (
+      {sidebarExpanded && activeScreenId !== 'home' && activeScreenId !== 'landing' && (
         <div className="px-3 py-2 border-t border-ink-100">
           <div className="px-3 py-2 bg-ink-50 rounded-lg">
             <div className="text-[10px] font-semibold uppercase tracking-wider
@@ -199,7 +204,8 @@ export default function Sidebar() {
                 if (screen.id !== activeScreenId) return null
                 return (
                   <div key={screen.id} className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-brand-600 flex-shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-600
+                                     flex-shrink-0" />
                     <span className="text-xs font-medium text-ink-700 truncate">
                       {screen.label}
                     </span>

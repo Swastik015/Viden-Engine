@@ -16,7 +16,7 @@ import S08_MLRCompliance     from './components/screens/S08_MLRCompliance.jsx'
 import S09_LaunchCampaign    from './components/screens/S09_LaunchCampaign.jsx'
 import S10_Analytics         from './components/screens/S10_Analytics.jsx'
 import S11_RefreshContent    from './components/screens/S11_RefreshContent.jsx'
-import S12_StoreLearnings    from './components/screens/S12_StoreLearnings.jsx'
+// import S12_StoreLearnings from './components/screens/S12_StoreLearnings.jsx'
 
 const SCREEN_MAP = {
   'landing':            <S00_Landing />,
@@ -32,7 +32,7 @@ const SCREEN_MAP = {
   'launch-campaign':    <S09_LaunchCampaign />,
   'analytics':          <S10_Analytics />,
   'refresh-content':    <S11_RefreshContent />,
-  'store-learnings':    <S12_StoreLearnings />,
+  // 'store-learnings':  <S12_StoreLearnings />,
 }
 
 export default function App() {

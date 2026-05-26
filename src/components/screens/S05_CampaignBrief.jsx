@@ -1,11 +1,19 @@
+import { useState } from 'react'
 import { ChevronRight, Download, Share2, CheckCircle } from 'lucide-react'
 import { useApp } from '../../context/AppContext.jsx'
 import AiPip from '../ui/AiPip.jsx'
 import Tag   from '../ui/Tag.jsx'
 
 export default function S05_CampaignBrief() {
-  const { data, advance } = useApp()
+  const { data, advance, selectedTheme } = useApp()
   const d = data.screens.campaignBrief
+
+  const [approved, setApproved] = useState(false)
+
+  function handleApprove() {
+    setApproved(true)
+    setTimeout(() => advance(), 800)
+  }
 
   return (
     <div>
@@ -14,13 +22,13 @@ export default function S05_CampaignBrief() {
         <div>
           <div className="screen-eyebrow">
             <span className="actor-tag-user">Your action</span>
-            <AiPip className="ml-1">KE auto-populated</AiPip>
+            <span className="actor-tag-ke">KE Auto-populated</span>
             <span>Step 05 · Plan</span>
           </div>
           <h1 className="screen-title">Campaign brief</h1>
           <p className="screen-subtitle">
-            Auto-drafted from your alignment decisions. Every claim carries its
-            source. Edit any section — Viden re-checks consistency.
+            Auto-drafted from your alignment decisions. Every claim carries
+            its source. Edit any section — Viden re-checks consistency.
           </p>
         </div>
         <div className="screen-actions">
@@ -32,216 +40,278 @@ export default function S05_CampaignBrief() {
             <Share2 size={13} />
             Share for review
           </button>
-          <button className="btn-primary btn" onClick={advance}>
-            Approve · configure content
-            <ChevronRight size={14} />
-          </button>
+          {!approved ? (
+            <button
+              className="btn-primary btn"
+              onClick={handleApprove}
+            >
+              <CheckCircle size={14} />
+              Approve · Configure content
+              <ChevronRight size={14} />
+            </button>
+          ) : (
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg
+                            bg-ok-50 border border-ok-200">
+              <CheckCircle size={14} className="text-ok-600" />
+              <span className="text-xs font-semibold text-ok-700">
+                Brief approved
+              </span>
+            </div>
+          )}
         </div>
       </div>
 
+      {/* ── Main body ── */}
       <div className="flex gap-5 items-start">
 
-        {/* ── LEFT: Brief document ── */}
-        <div className="card flex-[1.7]">
-          <div className="px-10 py-8">
+        {/* ── Brief document ── */}
+        <div className="flex-[1.6] card overflow-hidden">
 
-            {/* Document header */}
-            <div className="flex items-start justify-between mb-6 pb-5
-                            border-b border-ink-200">
+          {/* Doc header */}
+          <div className="px-6 py-4 border-b border-ink-100 bg-ink-50">
+            <div className="flex items-center justify-between">
               <div>
-                <div className="text-xs text-ink-400 font-semibold uppercase
-                                tracking-widest mb-1.5">
-                  Campaign brief · {d.version}
+                <div className="text-[10px] font-bold uppercase tracking-widest
+                                text-ink-400 mb-0.5">
+                  Campaign Brief · {d.version}
                 </div>
-                <h2 className="font-display text-xl font-medium text-ink-900
-                               tracking-tight leading-tight mb-1">
+                <h2
+                  className="text-lg font-semibold text-ink-900"
+                  style={{ fontFamily: 'Geist, sans-serif' }}
+                >
                   {data.campaign.name}
                 </h2>
-                <p className="text-sm text-ink-500">{data.campaign.subtitle}</p>
+                <div className="text-xs text-ink-400 mt-0.5">
+                  {data.campaign.subtitle}
+                </div>
               </div>
-              <div className="text-right text-xs text-ink-400 flex-shrink-0">
-                <div>{d.author}</div>
-                <div className="mt-0.5">{d.date}</div>
+              <div className="text-right text-xs text-ink-400 space-y-0.5">
+                <div>Version: <strong className="text-ink-700">{d.version}</strong></div>
+                <div>Author: <strong className="text-ink-700">{d.author}</strong></div>
+                <div>Date: <strong className="text-ink-700">{d.date}</strong></div>
+                <div>Brand: <strong className="text-ink-700">{data.campaign.brand}</strong></div>
+                <div>Go-live: <strong className="text-ink-700">{data.campaign.goLive}</strong></div>
               </div>
             </div>
 
-            {/* Brief sections */}
-            <div className="space-y-6">
-              {d.sections.map(section => (
-                <BriefSection key={section.num} section={section} />
-              ))}
-            </div>
+            {/* Theme badge */}
+            {selectedTheme && (
+              <div
+                className="mt-3 inline-flex items-center gap-2 px-3 py-1.5
+                           rounded-lg text-xs"
+                style={{
+                  background: selectedTheme.color.bg,
+                  border:     `1px solid ${selectedTheme.color.border}`,
+                }}
+              >
+                <span className="font-bold uppercase tracking-wider"
+                  style={{ color: selectedTheme.color.icon }}>
+                  Theme
+                </span>
+                <span className="font-semibold"
+                  style={{ color: selectedTheme.color.btn }}>
+                  {selectedTheme.title}
+                </span>
+              </div>
+            )}
+          </div>
 
+          {/* Sections */}
+          <div className="divide-y divide-ink-100">
+            {d.sections.map(section => (
+              <div key={section.num} className="px-6 py-5">
+                <div className="flex items-baseline gap-3 mb-3">
+                  <span className="font-mono text-xs font-bold text-ink-400">
+                    {section.num}
+                  </span>
+                  <h3
+                    className="text-sm font-bold text-ink-900 uppercase
+                               tracking-wider"
+                    style={{ fontFamily: 'Geist, sans-serif' }}
+                  >
+                    {section.heading}
+                  </h3>
+                </div>
+
+                {section.content && (
+                  <p className="text-sm text-ink-700 leading-relaxed ml-7">
+                    {section.content}
+                  </p>
+                )}
+
+                {section.pillars && (
+                  <div className="ml-7 flex flex-col gap-2">
+                    {section.pillars.map(pillar => (
+                      <div
+                        key={pillar.id}
+                        className={`
+                          flex items-center gap-3 px-4 py-2.5 rounded-lg border
+                          ${pillar.color === 'teal'
+                            ? 'bg-teal-50 border-teal-200'
+                            : 'bg-brand-50 border-brand-200'
+                          }
+                        `}
+                      >
+                        <span className={`
+                          font-mono text-xs font-bold px-2 py-0.5 rounded
+                          ${pillar.color === 'teal'
+                            ? 'bg-teal-700 text-white'
+                            : 'bg-brand-600 text-white'
+                          }
+                        `}>
+                          {pillar.id}
+                        </span>
+                        <span className="text-sm font-medium text-ink-800">
+                          {pillar.title}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* KPIs replaced with historical + projected table */}
+                {section.kpis && (
+                  <div className="ml-7 space-y-4">
+                    <div className="overflow-hidden rounded-lg border border-ink-200">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="bg-ink-50 border-b border-ink-200">
+                            <th className="px-4 py-2.5 text-left text-[10px]
+                                           font-bold uppercase tracking-wider
+                                           text-ink-500 w-1/3">
+                              Metric
+                            </th>
+                            <th className="px-4 py-2.5 text-left text-[10px]
+                                           font-bold uppercase tracking-wider
+                                           text-ink-500">
+                              Target
+                            </th>
+                            <th className="px-4 py-2.5 text-left text-[10px]
+                                           font-bold uppercase tracking-wider
+                                           text-ink-400">
+                              Historical avg
+                              <span className="font-normal ml-1">(14 campaigns)</span>
+                            </th>
+                            <th className="px-4 py-2.5 text-left text-[10px]
+                                           font-bold uppercase tracking-wider
+                                           text-ok-600">
+                              Expected uplift
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-ink-100">
+                          {[
+                            { label: 'SoV lift',           target: '+2.4 pts', historical: '+1.9 pts', uplift: '+26%',  by: '30 Nov 2026' },
+                            { label: 'HCPs reached',       target: '9,500',    historical: '7,200',    uplift: '+32%',  by: '30 Nov 2026' },
+                            { label: 'Infusion referrals', target: '+18%',     historical: '+12%',     uplift: '+50%',  by: 'Q3 close'    },
+                            { label: 'Engagement rate',    target: '3x+',      historical: '2.8x',     uplift: '+21%',  by: 'vs baseline' },
+                            { label: 'Time to launch',     target: '6 wks',    historical: '9 wks',    uplift: '-33%',  by: 'vs prior avg'},
+                          ].map(row => (
+                            <tr key={row.label} className="hover:bg-ink-50">
+                              <td className="px-4 py-3">
+                                <div className="text-xs font-semibold text-ink-900">
+                                  {row.label}
+                                </div>
+                                <div className="text-[10px] text-ink-400">
+                                  {row.by}
+                                </div>
+                              </td>
+                              <td className="px-4 py-3 font-mono font-bold
+                                             text-ink-900 text-sm">
+                                {row.target}
+                              </td>
+                              <td className="px-4 py-3 font-mono text-sm
+                                             text-ink-500">
+                                {row.historical}
+                              </td>
+                              <td className="px-4 py-3">
+                                <span className="font-mono text-xs font-bold
+                                                 px-2 py-0.5 rounded-full
+                                                 bg-ok-50 text-ok-700">
+                                  {row.uplift}
+                                </span>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* KE projection note */}
+                    <div
+                      className="flex items-center gap-2 px-3 py-2.5 rounded-lg"
+                      style={{ background: '#ECFDF5', border: '1px solid #D1FAE5' }}
+                    >
+                      <AiPip>KE · Projection</AiPip>
+                      <p className="text-xs text-ok-800 leading-relaxed">
+                        Projections based on 14 prior Vyepti campaigns.
+                        Onset of Action theme historically outperforms
+                        class average by 26% on SoV lift. Confidence: 82%.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* ── RIGHT: Meta panel ── */}
+        {/* ── RIGHT: Consistency check + doc info ── */}
         <div className="flex-1 space-y-4">
 
-          {/* Brief metadata */}
-          <div className="card card-pad">
-            <div className="text-xs font-semibold uppercase tracking-wider
-                            text-ink-400 mb-3">
-              Document info
+          {/* Consistency check */}
+          <div className="card">
+            <div className="card-head">
+              <div className="card-title">
+                <AiPip>KE</AiPip>
+                Consistency check
+              </div>
+              <Tag type="ok" dot={false} size="xs">All clear</Tag>
             </div>
-            <div className="space-y-2">
+            <div className="p-4 space-y-2">
               {[
-                { label: 'Version',   value: d.version      },
-                { label: 'Author',    value: 'Maya Chen'    },
-                { label: 'Created',   value: d.date         },
-                { label: 'Brand',     value: data.campaign.brand },
-                { label: 'Go-live',   value: data.campaign.goLive },
-              ].map(item => (
-                <div key={item.label} className="flex items-baseline justify-between">
-                  <span className="text-xs text-ink-400">{item.label}</span>
-                  <span className="text-xs font-medium text-ink-800 text-right max-w-[160px] truncate">
-                    {item.value}
+                'All claims sourced to approved evidence',
+                'Messaging pillars align with research findings',
+                'KPIs consistent with historical benchmarks',
+                'No expired claims referenced',
+                'Audience segments match objective',
+              ].map(check => (
+                <div key={check}
+                  className="flex items-center gap-2 text-xs text-ink-700">
+                  <CheckCircle size={13} className="text-ok-600 flex-shrink-0" />
+                  {check}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Document info */}
+          <div className="card">
+            <div className="card-head">
+              <div className="card-title">Document info</div>
+            </div>
+            <div className="divide-y divide-ink-100">
+              {[
+                { label: 'Version', value: d.version           },
+                { label: 'Author',  value: d.author            },
+                { label: 'Created', value: d.date              },
+                { label: 'Brand',   value: data.campaign.brand },
+                { label: 'Go-live', value: data.campaign.goLive},
+              ].map(row => (
+                <div key={row.label}
+                  className="px-4 py-2.5 flex items-center justify-between">
+                  <span className="text-xs text-ink-400">{row.label}</span>
+                  <span className="text-xs font-semibold text-ink-800
+                                   text-right max-w-[60%]">
+                    {row.value}
                   </span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Consistency check */}
-          <div
-            className="card card-pad"
-            style={{ background: '#ECFDF5', borderColor: '#D1FAE5' }}
-          >
-            <div className="flex items-center gap-2 mb-3">
-              <CheckCircle size={14} className="text-ok-600" />
-              <span className="text-xs font-semibold text-ok-700 uppercase tracking-wider">
-                Consistency check
-              </span>
-            </div>
-            <div className="space-y-2">
-              {[
-                'All claims sourced to approved evidence',
-                'Messaging pillars align with research findings',
-                'KPI targets consistent with segment size',
-                'No expired claims referenced',
-              ].map(check => (
-                <div key={check} className="flex items-start gap-2">
-                  <span className="w-1 h-1 rounded-full bg-ok-600 mt-1.5 flex-shrink-0" />
-                  <span className="text-xs text-ok-700 leading-relaxed">{check}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* KE note */}
-          <div
-            className="card card-pad"
-            style={{ background: '#EEF2FF', borderColor: '#E0E7FF' }}
-          >
-            <div className="flex items-center gap-2 mb-2">
-              <AiPip>KE · Note</AiPip>
-            </div>
-            <p className="text-xs leading-relaxed" style={{ color: '#1E1B4B' }}>
-              Section 03 pillar order matches your ranked themes from the
-              alignment step. Reorder themes in Step 04 to update automatically.
-            </p>
-          </div>
-
         </div>
       </div>
-    </div>
-  )
-}
-
-/* ── Individual brief section ── */
-function BriefSection({ section }) {
-  return (
-    <div>
-      {/* Section heading */}
-      <div className="text-xs font-bold uppercase tracking-widest
-                      text-brand-700 mb-2">
-        {section.num} · {section.heading}
-      </div>
-
-      {/* Plain text content */}
-      {section.content && (
-        <p
-          className="text-sm text-ink-700 leading-relaxed"
-          contentEditable
-          suppressContentEditableWarning
-        >
-          {section.content}
-        </p>
-      )}
-
-      {/* Messaging pillars */}
-      {section.pillars && (
-        <div className="space-y-2 mt-1">
-          {section.pillars.map(pillar => (
-            <div
-              key={pillar.id}
-              className="flex items-center gap-3 p-3 rounded-lg"
-              style={{
-                background:
-                  pillar.color === 'teal'  ? '#ECFEFF' :
-                  pillar.color === 'brand' ? '#EEF2FF' : '#F6F7FA',
-                borderLeft: `3px solid ${
-                  pillar.color === 'teal'  ? '#06B6D4' :
-                  pillar.color === 'brand' ? '#4338CA' : '#C8CCD8'
-                }`,
-              }}
-            >
-              <span
-                className="font-mono text-xs font-bold px-2 py-0.5 rounded text-white flex-shrink-0"
-                style={{
-                  background:
-                    pillar.color === 'teal'  ? '#0E7490' :
-                    pillar.color === 'brand' ? '#1E1B4B' : '#777E94',
-                }}
-              >
-                {pillar.id}
-              </span>
-              <span className="text-sm font-medium text-ink-900">
-                {pillar.title}
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* KPI table */}
-      {section.kpis && (
-        <div className="mt-2 overflow-hidden rounded-lg border border-ink-200">
-          <table className="w-full text-xs">
-            <thead className="bg-ink-50">
-              <tr>
-                <th className="text-left px-4 py-2 font-semibold text-ink-600
-                               uppercase tracking-wider text-[10px]">
-                  Metric
-                </th>
-                <th className="text-center px-4 py-2 font-semibold text-ink-600
-                               uppercase tracking-wider text-[10px]">
-                  Target
-                </th>
-                <th className="text-right px-4 py-2 font-semibold text-ink-600
-                               uppercase tracking-wider text-[10px]">
-                  By
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-ink-100">
-              {section.kpis.map(kpi => (
-                <tr key={kpi.label}>
-                  <td className="px-4 py-2.5 font-medium text-ink-800">
-                    {kpi.label}
-                  </td>
-                  <td className="px-4 py-2.5 text-center font-mono font-semibold text-brand-800">
-                    {kpi.target}
-                  </td>
-                  <td className="px-4 py-2.5 text-right text-ink-400">
-                    {kpi.by}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
     </div>
   )
 }

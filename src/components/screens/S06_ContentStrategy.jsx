@@ -1,4 +1,5 @@
-import { ChevronRight, Plus, Clock } from 'lucide-react'
+import { useState } from 'react'
+import { ChevronRight, Clock } from 'lucide-react'
 import { useApp } from '../../context/AppContext.jsx'
 import AiPip from '../ui/AiPip.jsx'
 import Tag   from '../ui/Tag.jsx'
@@ -6,6 +7,21 @@ import Tag   from '../ui/Tag.jsx'
 export default function S06_ContentStrategy() {
   const { data, advance } = useApp()
   const d = data.screens.contentStrategy
+
+  const [matrix, setMatrix] = useState(() =>
+    d.channelMatrix.map(row => ({ ...row }))
+  )
+
+  function toggleCell(channelIdx, segKey) {
+    setMatrix(prev => prev.map((row, i) => {
+      if (i !== channelIdx) return row
+      const updated = { ...row, [segKey]: !row[segKey] }
+      const activeSegs = ['t1','t2','gen','pcp'].filter(k => updated[k]).length
+      return { ...updated, variants: Math.max(1, activeSegs * 2) }
+    }))
+  }
+
+  const totalVariants = matrix.reduce((sum, row) => sum + row.variants, 0)
 
   return (
     <div>
@@ -19,7 +35,7 @@ export default function S06_ContentStrategy() {
           <h1 className="screen-title">Content strategy</h1>
           <p className="screen-subtitle">
             Select channels and assign audience segments. Personalization rules
-            control what each HCP sees. GenStudio will generate 30 variants.
+            control what each HCP sees. GenStudio will generate {totalVariants} variants.
           </p>
         </div>
         <div className="screen-actions">
@@ -35,7 +51,9 @@ export default function S06_ContentStrategy() {
       <div className="mb-6">
         <div className="sec-head mb-3">
           <span className="sec-head-title">Channel × segment matrix</span>
-          <span className="sec-head-meta">6 channels · 30 total variants</span>
+          <span className="sec-head-meta">
+            {matrix.length} channels · {totalVariants} total variants
+          </span>
         </div>
 
         <div className="card overflow-hidden">
@@ -46,14 +64,19 @@ export default function S06_ContentStrategy() {
                                text-xs uppercase tracking-wider w-48">
                   Channel
                 </th>
-                {['T1 KOL\n~140', 'T2 Neuro\n~580', 'Gen. Neuro\n~15,480', 'High-Rx PCPs\n~2,200'].map(h => (
-                  <th key={h} className="text-center px-4 py-3 font-semibold
-                                         text-ink-600 text-xs uppercase tracking-wider">
-                    {h.split('\n').map((line, i) => (
-                      <div key={i} className={i === 1 ? 'text-ink-400 font-normal normal-case' : ''}>
-                        {line}
-                      </div>
-                    ))}
+                {[
+                  { key: 't1',  label: 'T1 KOL',       count: '~140'    },
+                  { key: 't2',  label: 'T2 Neuro',     count: '~580'    },
+                  { key: 'gen', label: 'Gen. Neuro',   count: '~15,480' },
+                  { key: 'pcp', label: 'High-Rx PCPs', count: '~2,200'  },
+                ].map(seg => (
+                  <th key={seg.key} className="text-center px-4 py-3 font-semibold
+                                               text-ink-600 text-xs uppercase
+                                               tracking-wider">
+                    <div>{seg.label}</div>
+                    <div className="text-ink-400 font-normal normal-case">
+                      {seg.count}
+                    </div>
                   </th>
                 ))}
                 <th className="text-center px-4 py-3 font-semibold text-ink-600
@@ -63,7 +86,7 @@ export default function S06_ContentStrategy() {
               </tr>
             </thead>
             <tbody className="divide-y divide-ink-100">
-              {d.channelMatrix.map(row => (
+              {matrix.map((row, rowIdx) => (
                 <tr key={row.channel} className="hover:bg-ink-50 transition-colors">
                   <td className="px-5 py-3.5">
                     <div className="font-semibold text-ink-900 text-sm">
@@ -73,16 +96,23 @@ export default function S06_ContentStrategy() {
                       {row.subLabel}
                     </div>
                   </td>
-                  {[row.t1, row.t2, row.gen, row.pcp].map((active, i) => (
-                    <td key={i} className="text-center px-4 py-3.5">
-                      {active ? (
-                        <div className="w-8 h-8 bg-teal-600 rounded-md mx-auto
-                                        flex items-center justify-center">
+                  {['t1', 't2', 'gen', 'pcp'].map(segKey => (
+                    <td key={segKey} className="text-center px-4 py-3.5">
+                      <button
+                        onClick={() => toggleCell(rowIdx, segKey)}
+                        className={`
+                          w-8 h-8 rounded-md mx-auto flex items-center
+                          justify-center transition-all duration-150
+                          ${row[segKey]
+                            ? 'bg-teal-600 hover:bg-teal-700'
+                            : 'bg-ink-100 hover:bg-ink-200'
+                          }
+                        `}
+                      >
+                        {row[segKey] && (
                           <span className="text-white text-xs font-bold">✓</span>
-                        </div>
-                      ) : (
-                        <div className="w-8 h-8 bg-ink-100 rounded-md mx-auto" />
-                      )}
+                        )}
+                      </button>
                     </td>
                   ))}
                   <td className="text-center px-4 py-3.5 font-mono text-sm
@@ -134,10 +164,10 @@ export default function S06_ContentStrategy() {
               </div>
             ))}
 
-            {/* Add rule placeholder */}
             <button className="w-full card card-pad-sm border-dashed
-                               text-ink-400 hover:text-brand-700 hover:border-brand-300
-                               transition-colors duration-150 text-left">
+                               text-ink-400 hover:text-brand-700
+                               hover:border-brand-300 transition-colors
+                               duration-150 text-left">
               <div className="flex items-center gap-3">
                 <span className="font-mono text-xs px-2 py-0.5 rounded
                                  bg-ink-100 text-ink-500 font-bold">
@@ -158,29 +188,33 @@ export default function S06_ContentStrategy() {
 
           <div
             className="card"
-            style={{ background: 'linear-gradient(180deg, #ECFDF5 0%, #ffffff 50%)', borderColor: '#D1FAE5' }}
+            style={{
+              background: 'linear-gradient(180deg, #ECFDF5 0%, #ffffff 50%)',
+              borderColor: '#D1FAE5',
+            }}
           >
             <div className="card-pad-lg">
-
-              {/* GenStudio badge */}
               <div className="mb-4">
                 <AiPip type="gs">GenStudio · Ready</AiPip>
               </div>
 
-              {/* Big number */}
-              <div className="font-display text-5xl font-medium text-ink-900
-                              tracking-tight leading-none mb-1">
-                {d.generationPlan.totalVariants}
+              {/* Dynamic total */}
+              <div
+                className="text-5xl font-bold text-ink-900 tracking-tight
+                           leading-none mb-1 transition-all duration-300"
+                style={{ fontFamily: 'Geist, sans-serif' }}
+              >
+                {totalVariants}
               </div>
-              <div className="text-sm text-ink-400 mb-5">variants will be generated</div>
+              <div className="text-sm text-ink-400 mb-5">
+                variants will be generated
+              </div>
 
-              {/* Stats grid */}
               <div className="space-y-2.5">
                 {[
-                  { label: 'Modular components',     value: d.generationPlan.modularComponents     },
-                  { label: 'Channel-specific variants',value: d.generationPlan.totalVariants        },
-                  { label: 'Subject lines per email', value: d.generationPlan.subjectLinesPerEmail  },
-                  { label: 'Languages',               value: d.generationPlan.languages             },
+                  { label: 'Modular components',      value: d.generationPlan.modularComponents    },
+                  { label: 'Subject lines per email', value: d.generationPlan.subjectLinesPerEmail },
+                  { label: 'Languages',               value: d.generationPlan.languages            },
                 ].map(item => (
                   <div key={item.label}
                     className="flex items-center justify-between">
@@ -192,9 +226,10 @@ export default function S06_ContentStrategy() {
                 ))}
               </div>
 
-              {/* Est. time */}
               <div className="mt-5 pt-4 border-t border-dashed border-ink-200">
-                <div className="text-xs text-ink-400 mb-1.5">Est. generation time</div>
+                <div className="text-xs text-ink-400 mb-1.5">
+                  Est. generation time
+                </div>
                 <div className="flex items-center gap-2">
                   <Clock size={13} className="text-ok-600" />
                   <span className="text-sm font-semibold text-ok-700">
