@@ -67,8 +67,8 @@ export default function S00_Home() {
               <strong className="text-teal-300">Prior Failure Reset</strong> themes
             </p>
             <p className="text-white/60 text-xs">
-              These themes have driven the highest SoV lift across 7 prior
-              Vyepti campaigns · 87% and 79% success rates respectively
+              These themes have driven the highest TRx uplift across 7 prior
+              Vyepti campaigns · +22% and +18% avg TRx uplift respectively
             </p>
           </div>
         </div>
@@ -86,7 +86,7 @@ export default function S00_Home() {
                 <Icon size={13} />
                 {theme.title}
                 <span className="font-mono text-teal-300">
-                  {theme.stats.successRate}%
+                  {theme.stats.trxUplift}
                 </span>
               </button>
             )
@@ -175,10 +175,10 @@ export default function S00_Home() {
                 {!isNew ? (
                   <div className="w-full space-y-1.5">
                     <StatRow
-                      label="Success rate"
-                      value={`${theme.stats.successRate}%`}
+                      label="Avg TRx uplift"
+                      value={theme.stats.trxUplift}
                       color={theme.color.icon}
-                      pct={theme.stats.successRate}
+                      pct={parseInt(theme.stats.trxUplift) ?? 50}
                     />
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] text-ink-400">
@@ -266,9 +266,9 @@ function ThemeDetail({ theme, onStartNew, onUseTemplate, onBack }) {
         {!isNew && (
           <div className="flex gap-6 flex-shrink-0">
             {[
-              { label: 'Success rate', value: `${theme.stats.successRate}%` },
-              { label: 'SoV lift',     value: theme.stats.sovLift           },
-              { label: 'TRx uplift',   value: theme.stats.trxUplift         },
+              { label: 'Avg TRx uplift', value: theme.stats.trxUplift },
+              { label: 'Avg SoV lift',   value: theme.stats.sovLift   },
+              { label: 'Campaigns run',  value: `${theme.stats.campaignsRun}` },
             ].map(stat => (
               <div key={stat.label} className="text-center">
                 <div

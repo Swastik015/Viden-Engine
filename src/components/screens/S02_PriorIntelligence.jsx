@@ -347,40 +347,7 @@ export default function S02_PriorIntelligence() {
         </div>
       </div>
 
-      {/* ── 5. Claims Surfaced ── */}
-      <div className="mb-8">
-        <div className="sec-head">
-          <span className="sec-head-title">
-            Claims surfaced for this campaign
-          </span>
-          <AiPip>KE</AiPip>
-        </div>
 
-        <div className="card">
-          <div className="divide-y divide-ink-100">
-            {d.claims.map((claim, i) => (
-              <div key={i} className="px-5 py-4">
-                <div className="text-sm text-ink-900 mb-2">
-                  {claim.text}{' '}
-                  <span className="cite">{claim.citation}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  {claim.status === 'approved' ? (
-                    <Tag type="ok" dot={false} size="xs">
-                      MLR approved
-                      {claim.expires && ` · expires ${claim.expires}`}
-                    </Tag>
-                  ) : (
-                    <Tag type="warn" dot={false} size="xs">
-                      Needs fair balance pairing
-                    </Tag>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
 
       {/* ── 6. Performance Summary ── */}
       <div>

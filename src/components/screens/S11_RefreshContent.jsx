@@ -1,11 +1,12 @@
-import { ChevronRight, TrendingDown, RefreshCw } from 'lucide-react'
+import { useState } from 'react'
+import { ChevronRight, TrendingDown, RefreshCw, CheckCircle } from 'lucide-react'
 import { useApp } from '../../context/AppContext.jsx'
 import FilterBar from '../ui/FilterBar.jsx'
 import AiPip    from '../ui/AiPip.jsx'
 import Tag      from '../ui/Tag.jsx'
 
 export default function S11_RefreshContent() {
-  const { data, advance } = useApp()
+  const { data, goToScreen } = useApp()
   const d = data.screens.refreshContent
 
   return (
@@ -25,7 +26,10 @@ export default function S11_RefreshContent() {
         </div>
         <div className="screen-actions">
           <button className="btn-ghost btn btn-sm">Schedule wave</button>
-          <button className="btn-primary btn" onClick={advance}>
+          <button
+            className="btn-primary btn"
+            onClick={() => goToScreen('analytics')}
+          >
             Approve refresh · back to analytics
             <ChevronRight size={14} />
           </button>
@@ -112,6 +116,28 @@ export default function S11_RefreshContent() {
           </div>
         </div>
       </div>
+
+      {/* ── KE loop-back indicator ── */}
+      <div
+        className="mt-6 card card-pad flex items-center gap-4"
+        style={{ background: '#ECFDF5', borderColor: '#D1FAE5' }}
+      >
+        <div className="w-8 h-8 rounded-lg bg-ok-100 flex items-center
+                        justify-center flex-shrink-0">
+          <RefreshCw size={15} className="text-ok-700" />
+        </div>
+        <div className="flex-1">
+          <div className="text-xs font-bold text-ok-800 mb-0.5">
+            Learnings looped back to Knowledge Engine
+          </div>
+          <p className="text-xs text-ok-700 leading-relaxed">
+            All performance data, fatigue signals and refresh decisions from
+            this cycle are automatically written back to the KE — ready for
+            the next campaign.
+          </p>
+        </div>
+      </div>
+
     </div>
   )
 }
@@ -124,9 +150,7 @@ function FatiguedCard({ variant }) {
     <div
       className="card card-pad"
       style={{
-        borderLeft: `3px solid ${
-          isSevere ? '#D97706' : '#C8CCD8'
-        }`,
+        borderLeft: `3px solid ${isSevere ? '#D97706' : '#C8CCD8'}`,
         opacity: isSevere ? 1 : 0.7,
       }}
     >
@@ -178,9 +202,9 @@ function FatiguedCard({ variant }) {
 /* ── Move card ── */
 function MoveCard({ move }) {
   const styles = {
-    ok:    { badge: 'bg-ok-600',      wrapper: 'from-ok-50 to-white',    border: '#D1FAE5' },
-    brand: { badge: 'bg-brand-700',   wrapper: 'from-brand-50 to-white', border: '#E0E7FF' },
-    ink:   { badge: 'bg-ink-400',     wrapper: 'from-ink-50 to-white',   border: '#E2E4EC' },
+    ok:    { badge: 'bg-ok-600',    wrapper: 'from-ok-50 to-white',    border: '#D1FAE5' },
+    brand: { badge: 'bg-brand-700', wrapper: 'from-brand-50 to-white', border: '#E0E7FF' },
+    ink:   { badge: 'bg-ink-400',   wrapper: 'from-ink-50 to-white',   border: '#E2E4EC' },
   }
   const s = styles[move.type] ?? styles.ink
 
@@ -209,8 +233,8 @@ function MoveCard({ move }) {
       </div>
 
       {/* Title */}
-      <h4 className="font-display text-base font-medium text-ink-900
-                     tracking-tight mb-1.5">
+      <h4 className="text-base font-medium text-ink-900 tracking-tight mb-1.5"
+        style={{ fontFamily: 'Geist, sans-serif' }}>
         {move.title}
       </h4>
 
@@ -219,9 +243,9 @@ function MoveCard({ move }) {
         {move.detail}
       </p>
 
-      {/* Subject lines (if present) */}
+      {/* Subject lines */}
       {move.newSubjectLines && (
-        <div className="bg-white border border-ink-200 rounded-lg p-3">
+        <div className="bg-white border border-ink-200 rounded-lg p-3 mb-3">
           <div className="text-[10px] font-semibold uppercase tracking-wider
                           text-ink-400 mb-2">
             Proposed subject lines ({move.newSubjectLines.length} variants)
@@ -242,12 +266,53 @@ function MoveCard({ move }) {
 
       {/* Confidence */}
       {move.confidence && (
-        <div className="flex items-center gap-1.5 mt-2">
+        <div className="flex items-center gap-1.5 mb-3">
           <Tag type="ok" dot={false} size="xs">
             Confidence {move.confidence}%
           </Tag>
         </div>
       )}
+
+      {/* Action buttons */}
+      <MoveActions moveId={move.moveId} />
+    </div>
+  )
+}
+
+/* ── Move action buttons ── */
+function MoveActions({ moveId }) {
+  const [applied,   setApplied]   = useState(false)
+  const [dismissed, setDismissed] = useState(false)
+
+  if (dismissed) return (
+    <div className="text-xs text-ink-400 mt-1">Move dismissed</div>
+  )
+
+  if (applied) return (
+    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg
+                    bg-ok-50 border border-ok-200 w-fit mt-1">
+      <CheckCircle size={13} className="text-ok-600" />
+      <span className="text-xs font-semibold text-ok-700">
+        Move applied · queued for generation
+      </span>
+    </div>
+  )
+
+  return (
+    <div className="flex items-center gap-2 mt-1">
+      <button
+        onClick={() => setApplied(true)}
+        className="btn-teal btn btn-sm"
+      >
+        <CheckCircle size={12} />
+        Apply move
+      </button>
+      <button
+        onClick={() => setDismissed(true)}
+        className="btn-ghost btn btn-sm"
+      >
+        Dismiss
+      </button>
     </div>
   )
 }
